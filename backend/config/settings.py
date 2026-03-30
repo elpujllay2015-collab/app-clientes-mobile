@@ -87,11 +87,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {  # <-- LÍNEA CORREGIDA
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # <-- LÍNEA CORREGIDA
-        'NAME': 'app_mobil_ventas',  # <-- LÍNEA CORREGIDA
-        'USER': 'root',  # <-- LÍNEA CORREGIDA
-        'PASSWORD': 'RootNerca2026!',  # <-- LÍNEA CORREGIDA
-        'HOST': '127.0.0.1',  # <-- LÍNEA CORREGIDA
-        'PORT': '3306',  # <-- LÍNEA CORREGIDA
+        'NAME': config('MYSQLDATABASE'),
+        'USER': config('MYSQLUSER'),
+        'PASSWORD': config('MYSQLPASSWORD'),
+        'HOST': config('MYSQLHOST'),
+        'PORT': config('MYSQLPORT'),
     }
 }
 
