@@ -19,6 +19,7 @@ export default function ResultadosPage() {
   const [proveedores, setProveedores] = useState([])
   const [catalogoProveedores, setCatalogoProveedores] = useState([])
   const [proveedorId, setProveedorId] = useState('')
+  const [ordenProveedor, setOrdenProveedor] = useState('deuda')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -77,10 +78,33 @@ export default function ResultadosPage() {
               </option>
             ))}
           </select>
+          <select
+            className="input resultados-filter-select"
+            value={ordenProveedor}
+            onChange={(e) => setOrdenProveedor(e.target.value)}
+          >
+            <option value="deuda">Ordenar por deuda</option>
+            <option value="resultado">Ordenar por resultado</option>
+            <option value="venta">Ordenar por volumen</option>
+          </select>
         </div>
-        <button className="primary-btn" type="button" onClick={load}>
-          Actualizar resultados
-        </button>
+        <div className="resultados-filter-actions">
+          <button className="primary-btn" type="button" onClick={load}>
+            Actualizar resultados
+          </button>
+          {proveedorId && (
+            <button
+              className="secondary-btn resultados-filter-clear-btn"
+              type="button"
+              onClick={() => {
+                setProveedorId('')
+                setTimeout(load, 0)
+              }}
+            >
+              Limpiar filtro
+            </button>
+          )}
+        </div>
       </article>
 
       {loading && <article className="list-card">Cargando resultados...</article>}
@@ -129,55 +153,70 @@ export default function ResultadosPage() {
             <article className="list-card">No hay resultados por proveedor en ese período.</article>
           )}
 
-          {proveedores.map((proveedor) => (
-            <article className="resultados-proveedor-card" key={proveedor.proveedor_id ?? `sin-proveedor-${proveedor.proveedor_nombre}`}>
-              <div className="resultados-proveedor-top">
-                <div>
-                  <strong className="resultados-proveedor-name">{proveedor.proveedor_nombre}</strong>
-                  <span className="resultados-proveedor-sales">{proveedor.cantidad_ventas} ventas asociadas</span>
-                </div>
-                <span className="resultados-proveedor-badge">Debe {formatMoney(proveedor.saldo_pendiente)}</span>
-              </div>
-
-              <div className="resultados-proveedor-grid">
-                <div className="resultados-proveedor-metric">
-                  <span className="summary-label">Total venta</span>
-                  <strong>{formatMoney(proveedor.total_venta)}</strong>
-                </div>
-                <div className="resultados-proveedor-metric">
-                  <span className="summary-label">Total costo</span>
-                  <strong>{formatMoney(proveedor.total_costo)}</strong>
-                </div>
-                <div className="resultados-proveedor-metric">
-                  <span className="summary-label">Resultado</span>
-                  <strong>{formatMoney(proveedor.resultado_venta)}</strong>
-                </div>
-                <div className="resultados-proveedor-metric">
-                  <span className="summary-label">Cobrado</span>
-                  <strong>{formatMoney(proveedor.total_pagado)}</strong>
-                </div>
-                <div className="resultados-proveedor-metric resultados-proveedor-metric-highlight">
-                  <span className="summary-label">Deuda total clientes</span>
-                  <strong>{formatMoney(proveedor.saldo_pendiente)}</strong>
-                </div>
-              </div>
-
-              <div className="resultados-proveedor-clients-block">
-                <strong className="resultados-proveedor-clients-title">Clientes que deben a este proveedor</strong>
-
-                {proveedor.clientes.length === 0 && (
-                  <span className="resultados-proveedor-empty">No hay deuda pendiente para este proveedor.</span>
-                )}
-
-                {proveedor.clientes.map((cliente) => (
-                  <div className="resultados-proveedor-client-row" key={`${proveedor.proveedor_id ?? 'sin'}-${cliente.cliente_id}`}>
-                    <span className="resultados-proveedor-client-name">{cliente.cliente_nombre}</span>
-                    <strong className="resultados-proveedor-client-balance">{formatMoney(cliente.saldo_pendiente)}</strong>
+          {[...proveedores]
+            .sort((a, b) => {
+              if (ordenProveedor === 'resultado') return Number(b.resultado_venta) - Number(a.resultado_venta)
+              if (ordenProveedor === 'venta') return Number(b.total_venta) - Number(a.total_venta)
+              return Number(b.saldo_pendiente) - Number(a.saldo_pendiente)
+            })
+            .map((proveedor) => (
+              <article className="resultados-proveedor-card" key={proveedor.proveedor_id ?? `sin-proveedor-${proveedor.proveedor_nombre}`}>
+                <div className="resultados-proveedor-top">
+                  <div>
+                    <strong className="resultados-proveedor-name">{proveedor.proveedor_nombre}</strong>
+                    <span className="resultados-proveedor-sales">{proveedor.cantidad_ventas} ventas asociadas</span>
                   </div>
-                ))}
-              </div>
-            </article>
-          ))}
+                  <div className="resultados-proveedor-top-badges">
+                    <span className={`resultados-proveedor-kpi resultados-proveedor-kpi-${proveedor.kpi_estado}`}>
+                      {proveedor.kpi_estado === 'rentable' ? 'Rentable' : proveedor.kpi_estado === 'bajo_margen' ? 'Bajo margen' : 'Pérdida'}
+                    </span>
+                    <span className="resultados-proveedor-badge">Debe {formatMoney(proveedor.saldo_pendiente)}</span>
+                  </div>
+                </div>
+
+                <div className="resultados-proveedor-grid">
+                  <div className="resultados-proveedor-metric">
+                    <span className="summary-label">Total venta</span>
+                    <strong>{formatMoney(proveedor.total_venta)}</strong>
+                  </div>
+                  <div className="resultados-proveedor-metric">
+                    <span className="summary-label">Total costo</span>
+                    <strong>{formatMoney(proveedor.total_costo)}</strong>
+                  </div>
+                  <div className="resultados-proveedor-metric">
+                    <span className="summary-label">Resultado</span>
+                    <strong>{formatMoney(proveedor.resultado_venta)}</strong>
+                  </div>
+                  <div className="resultados-proveedor-metric">
+                    <span className="summary-label">% margen</span>
+                    <strong>{Number(proveedor.margen_porcentaje || 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%</strong>
+                  </div>
+                  <div className="resultados-proveedor-metric">
+                    <span className="summary-label">Cobrado</span>
+                    <strong>{formatMoney(proveedor.total_pagado)}</strong>
+                  </div>
+                  <div className="resultados-proveedor-metric resultados-proveedor-metric-highlight">
+                    <span className="summary-label">Deuda total clientes</span>
+                    <strong>{formatMoney(proveedor.saldo_pendiente)}</strong>
+                  </div>
+                </div>
+
+                <div className="resultados-proveedor-clients-block">
+                  <strong className="resultados-proveedor-clients-title">Clientes que deben a este proveedor</strong>
+
+                  {proveedor.clientes.length === 0 && (
+                    <span className="resultados-proveedor-empty">No hay deuda pendiente para este proveedor.</span>
+                  )}
+
+                  {proveedor.clientes.map((cliente) => (
+                    <div className="resultados-proveedor-client-row" key={`${proveedor.proveedor_id ?? 'sin'}-${cliente.cliente_id}`}>
+                      <span className="resultados-proveedor-client-name">{cliente.cliente_nombre}</span>
+                      <strong className="resultados-proveedor-client-balance">{formatMoney(cliente.saldo_pendiente)}</strong>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ))}
 
           <article className="list-card">
             <strong>Ventas del período</strong>
