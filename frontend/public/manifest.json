@@ -1,0 +1,10 @@
+{
+  "name": "App Mobile Ventas",
+  "short_name": "Ventas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#12344d",
+  "orientation": "portrait",
+  "icons": []
+}
