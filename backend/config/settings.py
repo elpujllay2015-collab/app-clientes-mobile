@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {  # <-- LÍNEA CORREGIDA
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # <-- LÍNEA CORREGIDA
-        'NAME': os.getenv('MYSQLDATABASE'),
+        'NAME': os.getenv('MYSQL_DATABASE'),
         'USER': os.getenv('MYSQLUSER'),
         'PASSWORD': os.getenv('MYSQLPASSWORD'),
         'HOST': os.getenv('MYSQLHOST'),
