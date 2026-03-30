@@ -128,12 +128,23 @@ class ResultadosPorProveedorView(APIView):
             clientes = list(item.pop('clientes_map').values())
             clientes.sort(key=lambda x: (-x['saldo_pendiente'], x['cliente_nombre'] or ''))
 
+            margen = ((item['resultado_venta'] / item['total_costo']) * 100) if item['total_costo'] else 0.0
+
+            if item['resultado_venta'] < 0:
+                kpi_estado = 'perdida'
+            elif margen < 5:
+                kpi_estado = 'bajo_margen'
+            else:
+                kpi_estado = 'rentable'
+
             response.append({
                 'proveedor_id': item['proveedor_id'],
                 'proveedor_nombre': item['proveedor_nombre'],
                 'total_costo': f"{item['total_costo']:.2f}",
                 'total_venta': f"{item['total_venta']:.2f}",
                 'resultado_venta': f"{item['resultado_venta']:.2f}",
+                'margen_porcentaje': f"{margen:.2f}",
+                'kpi_estado': kpi_estado,
                 'total_pagado': f"{item['total_pagado']:.2f}",
                 'saldo_pendiente': f"{item['saldo_pendiente']:.2f}",
                 'cantidad_ventas': item['cantidad_ventas'],
