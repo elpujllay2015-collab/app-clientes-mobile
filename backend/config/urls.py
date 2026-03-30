@@ -17,9 +17,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from django.http import HttpResponse  # <-- NUEVO
 
+def home(request):  # <-- NUEVO
+    return HttpResponse("OK NERCA API funcionando")
 
 urlpatterns = [
+    path('', home),  # <-- NUEVO
     path('admin/', admin.site.urls),
     path('api/', include('config.api_urls')),
 ]
