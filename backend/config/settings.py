@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
-import os
+
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,11 +30,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+
 # Application definition
 
 INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt',
     'apps.clientes',
     'apps.productos',
     'apps.ventas',
@@ -79,15 +83,17 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+# En Railway estas variables las inyecta el servicio MySQL.
+# En local se leen del archivo backend/.env (no versionado).
 
-DATABASES = {  # <-- LÍNEA CORREGIDA
+DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # <-- LÍNEA CORREGIDA
-        'NAME': os.getenv('MYSQL_DATABASE'),
-        'USER': os.getenv('MYSQLUSER'),
-        'PASSWORD': os.getenv('MYSQLPASSWORD'),
-        'HOST': os.getenv('MYSQLHOST'),
-        'PORT': os.getenv('MYSQLPORT'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config('MYSQL_DATABASE', default='app_mobil_ventas'),
+        'USER': config('MYSQLUSER', default='root'),
+        'PASSWORD': config('MYSQLPASSWORD', default=''),
+        'HOST': config('MYSQLHOST', default='127.0.0.1'),
+        'PORT': config('MYSQLPORT', default='3306'),
     }
 }
 
@@ -128,4 +134,21 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-CORS_ALLOW_ALL_ORIGINS = True  # <-- LÍNEA CONSERVADA
+CORS_ALLOW_ALL_ORIGINS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}

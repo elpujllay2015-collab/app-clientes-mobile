@@ -33,7 +33,7 @@ function badgeMeta(estado) {
   return { label: 'Pendiente', className: 'home-badge-pending' }
 }
 
-export default function HomePage({ onNavigate }) {
+export default function HomePage({ onNavigate, currentUser, onLogout, onChangePassword }) {
   const [clientes, setClientes] = useState([])
   const [ventas, setVentas] = useState([])
   const [pagos, setPagos] = useState([])
@@ -114,9 +114,24 @@ export default function HomePage({ onNavigate }) {
       {!loading && (
         <>
           <section className="home-hero-card">
-            <span className="home-hero-kicker">CUENTA CORRIENTE</span>
-            <h1 className="home-hero-title">Ventas y Cobros</h1>
-            <p className="home-hero-text">App simple profesional para celular</p>
+            <div className="home-hero-top-row">
+              <div>
+                <span className="home-hero-kicker">CUENTA CORRIENTE</span>
+                <h1 className="home-hero-title">Ventas y Cobros</h1>
+                <p className="home-hero-text">App simple profesional para celular</p>
+              </div>
+              <div className="home-hero-session">
+                <span className="home-session-user">{currentUser?.first_name || currentUser?.username || 'Usuario'}</span>
+                <div className="home-session-actions">
+                  <button className="home-session-password" type="button" onClick={onChangePassword}>
+                    Cambiar clave
+                  </button>
+                  <button className="home-session-logout" type="button" onClick={onLogout}>
+                    Salir
+                  </button>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section className="home-actions-grid">

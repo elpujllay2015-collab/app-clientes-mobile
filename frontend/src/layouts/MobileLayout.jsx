@@ -8,15 +8,33 @@ const tabs = [
   { key: 'cuenta', label: 'Cuenta' },
 ]
 
-export default function MobileLayout({ title, activeTab, onChangeTab, children }) {
+function formatUserName(user) {
+  if (!user) return ''
+  const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim()
+  return fullName || user.username || ''
+}
+
+export default function MobileLayout({ title, activeTab, onChangeTab, children, currentUser, onLogout, onChangePassword }) {
   const showHeader = activeTab !== 'inicio'
+  const userName = formatUserName(currentUser)
 
   return (
     <div className="app-shell">
       {showHeader && (
         <header className="app-header">
-          <div className="app-title">{title}</div>
-          <div className="app-subtitle">Cuenta corriente mobile</div>
+          <div>
+            <div className="app-title">{title}</div>
+            <div className="app-subtitle">Cuenta corriente mobile</div>
+          </div>
+          <div className="app-header-actions">
+            {userName ? <div className="app-user-badge">{userName}</div> : null}
+            <button className="app-password-btn" type="button" onClick={onChangePassword}>
+              Clave
+            </button>
+            <button className="app-logout-btn" type="button" onClick={onLogout}>
+              Salir
+            </button>
+          </div>
         </header>
       )}
 

@@ -2038,3 +2038,266 @@ textarea {
     width: fit-content;
   }
 }
+
+
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-user-badge {
+  max-width: 150px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fbff;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-password-btn,
+.app-logout-btn,
+.home-session-password,
+.home-session-logout,
+.auth-secondary-btn,
+.login-submit {
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.app-password-btn,
+.app-logout-btn {
+  padding: 10px 14px;
+  background: #ffffff;
+  color: #071b55;
+  font-weight: 700;
+}
+
+.app-password-btn {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.home-hero-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.home-hero-session {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.home-session-user {
+  max-width: 120px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.home-session-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.home-session-password,
+.home-session-logout {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.home-session-password {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(180deg, #eef3ff 0%, #f7f8fc 100%);
+}
+
+.login-card {
+  width: min(100%, 420px);
+  padding: 30px 24px;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(8, 26, 72, 0.12);
+}
+
+.login-kicker {
+  margin-bottom: 10px;
+  color: #51607d;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.26em;
+}
+
+.login-title {
+  margin: 0;
+  color: #071b55;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.login-text {
+  margin: 10px 0 0;
+  color: #5c6781;
+  line-height: 1.5;
+}
+
+.login-form {
+  margin-top: 24px;
+  display: grid;
+  gap: 18px;
+}
+
+.login-field {
+  display: grid;
+  gap: 8px;
+}
+
+.login-field span {
+  color: #223150;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.login-field input {
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid #d8dfef;
+  border-radius: 16px;
+  font-size: 16px;
+  color: #14213d;
+  background: #f8faff;
+}
+
+.login-field input:focus {
+  outline: none;
+  border-color: #5b7cff;
+  box-shadow: 0 0 0 4px rgba(91, 124, 255, 0.14);
+}
+
+.login-info,
+.login-error,
+.login-success {
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.login-info {
+  background: #eef4ff;
+  color: #24439b;
+}
+
+.login-error {
+  background: #ffe7e8;
+  color: #b12d3a;
+}
+
+.login-success {
+  background: #e8fff1;
+  color: #0f7a41;
+}
+
+.login-submit {
+  height: 52px;
+  background: #071b55;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.login-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.app-password-btn:hover,
+.app-logout-btn:hover,
+.home-session-password:hover,
+.home-session-logout:hover,
+.auth-secondary-btn:hover,
+.login-submit:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 420px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .app-header-actions,
+  .home-hero-top-row {
+    width: 100%;
+  }
+
+  .app-header-actions {
+    justify-content: space-between;
+  }
+
+  .home-hero-top-row {
+    flex-direction: column;
+  }
+
+  .home-hero-session {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .home-session-user {
+    max-width: none;
+    text-align: left;
+  }
+}
+
+
+.auth-settings-screen {
+  align-items: flex-start;
+  padding-top: 32px;
+}
+
+.auth-settings-card {
+  width: min(100%, 520px);
+}
+
+.auth-settings-title {
+  font-size: 28px;
+}
+
+.auth-settings-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.auth-settings-actions .login-submit,
+.auth-secondary-btn {
+  flex: 1;
+}
+
+.auth-secondary-btn {
+  height: 52px;
+  background: #edf2ff;
+  color: #223150;
+  font-size: 16px;
+  font-weight: 800;
+}

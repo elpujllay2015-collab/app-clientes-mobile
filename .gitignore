@@ -1,0 +1,19 @@
+# Python / Django
+backend/venv/
+**/__pycache__/
+*.pyc
+*.pyo
+.env
+db.sqlite3
+# Node / Vite
+frontend/node_modules/
+frontend/dist/
+# Cruft local (no versionar)
+backend/backend_temp/
+backend/26.0.1
+backend/cd
+# Backups y docs (quedan solo en tu PC por ahora)
+*.zip
+Backups/
+Diseño*.txt
+Mejoras App.txt

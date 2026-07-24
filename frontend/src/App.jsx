@@ -7,7 +7,10 @@ import NuevaVentaPage from './pages/NuevaVentaPage'
 import PagosPage from './pages/PagosPage'
 import CuentaCorrientePage from './pages/CuentaCorrientePage'
 import ResultadosPage from './pages/ResultadosPage'
+import LoginPage from './pages/LoginPage'
+import ChangePasswordPage from './pages/ChangePasswordPage'
 import MobileLayout from './layouts/MobileLayout'
+import { AUTH_SESSION_EXPIRED_EVENT, clearSession, fetchCurrentUser, getStoredUser, isAuthenticated } from './auth/auth'
 import nPieceTop from './assets/splash/n_piece_1_metal.png'
 import nPieceMain from './assets/splash/n_piece_2_metal.png'
 import nPieceLeft from './assets/splash/n_piece_3_metal.png'
@@ -24,11 +27,12 @@ const TABS = {
   pagos: 'Pagos',
   resultados: 'Resultados',
   cuenta: 'Cuenta corriente',
+  password: 'Cambiar contraseña',
 }
 
 const SPLASH_STORAGE_KEY = 'nerca-poquet-splash-seen'
-const SPLASH_LEAVE_MS = 4550 // <-- LÍNEA CORREGIDA
-const SPLASH_HIDE_MS = 5250 // <-- LÍNEA CORREGIDA
+const SPLASH_LEAVE_MS = 4550
+const SPLASH_HIDE_MS = 5250
 
 function shouldShowSplash() {
   if (typeof window === 'undefined') {
@@ -72,6 +76,9 @@ export default function App() {
   const [tab, setTab] = useState('inicio')
   const [showSplash, setShowSplash] = useState(() => shouldShowSplash())
   const [splashLeaving, setSplashLeaving] = useState(false)
+  const [currentUser, setCurrentUser] = useState(() => getStoredUser())
+  const [authReady, setAuthReady] = useState(false)
+  const [loginMessage, setLoginMessage] = useState('')
 
   useEffect(() => {
     if (!showSplash) {
@@ -101,6 +108,73 @@ export default function App() {
     }
   }, [showSplash])
 
+  useEffect(() => {
+    let active = true
+
+    async function validateSession() {
+      if (!isAuthenticated()) {
+        if (active) {
+          setCurrentUser(null)
+          setAuthReady(true)
+        }
+        return
+      }
+
+      try {
+        const user = await fetchCurrentUser()
+        if (!active) return
+        setCurrentUser(user)
+      } catch {
+        clearSession()
+        if (!active) return
+        setCurrentUser(null)
+      } finally {
+        if (active) {
+          setAuthReady(true)
+        }
+      }
+    }
+
+    validateSession()
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  useEffect(() => {
+    function handleSessionExpired(event) {
+      clearSession()
+      setCurrentUser(null)
+      setAuthReady(true)
+      setTab('inicio')
+      setLoginMessage(event.detail?.message || 'Tu sesión venció. Iniciá sesión nuevamente.')
+    }
+
+    window.addEventListener(AUTH_SESSION_EXPIRED_EVENT, handleSessionExpired)
+    return () => {
+      window.removeEventListener(AUTH_SESSION_EXPIRED_EVENT, handleSessionExpired)
+    }
+  }, [])
+
+  function handleLoginSuccess(user) {
+    setCurrentUser(user)
+    setAuthReady(true)
+    setTab('inicio')
+    setLoginMessage('')
+  }
+
+  function handleLogout() {
+    clearSession()
+    setCurrentUser(null)
+    setTab('inicio')
+    setLoginMessage('')
+  }
+
+  function handleOpenChangePassword() {
+    setTab('password')
+  }
+
   const content = useMemo(() => {
     switch (tab) {
       case 'clientes':
@@ -117,21 +191,29 @@ export default function App() {
         return <ResultadosPage />
       case 'cuenta':
         return <CuentaCorrientePage />
+      case 'password':
+        return <ChangePasswordPage onCancel={() => setTab('inicio')} />
       default:
-        return <HomePage onNavigate={setTab} />
+        return <HomePage onNavigate={setTab} currentUser={currentUser} onLogout={handleLogout} onChangePassword={handleOpenChangePassword} />
     }
-  }, [tab])
+  }, [tab, currentUser])
 
   return (
     <>
       {showSplash ? <SplashIntro leaving={splashLeaving} /> : null}
-      <MobileLayout
-        title={TABS[tab]}
-        activeTab={tab}
-        onChangeTab={setTab}
-      >
-        {content}
-      </MobileLayout>
+      {!showSplash && authReady && !currentUser ? <LoginPage onLoginSuccess={handleLoginSuccess} initialMessage={loginMessage} /> : null}
+      {!showSplash && authReady && currentUser ? (
+        <MobileLayout
+          title={TABS[tab]}
+          activeTab={tab}
+          onChangeTab={setTab}
+          currentUser={currentUser}
+          onLogout={handleLogout}
+          onChangePassword={handleOpenChangePassword}
+        >
+          {content}
+        </MobileLayout>
+      ) : null}
     </>
   )
 }
