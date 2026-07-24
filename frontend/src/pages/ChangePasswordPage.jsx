@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { changePassword } from '../auth/auth'
+import PasswordInput from '../components/PasswordInput'
 
 export default function ChangePasswordPage({ onSuccess, onCancel }) {
   const [currentPassword, setCurrentPassword] = useState('')
@@ -45,8 +46,7 @@ export default function ChangePasswordPage({ onSuccess, onCancel }) {
         <form className="login-form" onSubmit={handleSubmit}>
           <label className="login-field">
             <span>Contraseña actual</span>
-            <input
-              type="password"
+            <PasswordInput
               value={currentPassword}
               onChange={(event) => setCurrentPassword(event.target.value)}
               autoComplete="current-password"
@@ -57,8 +57,7 @@ export default function ChangePasswordPage({ onSuccess, onCancel }) {
 
           <label className="login-field">
             <span>Nueva contraseña</span>
-            <input
-              type="password"
+            <PasswordInput
               value={newPassword}
               onChange={(event) => setNewPassword(event.target.value)}
               autoComplete="new-password"
@@ -69,8 +68,7 @@ export default function ChangePasswordPage({ onSuccess, onCancel }) {
 
           <label className="login-field">
             <span>Repetir nueva contraseña</span>
-            <input
-              type="password"
+            <PasswordInput
               value={newPasswordConfirm}
               onChange={(event) => setNewPasswordConfirm(event.target.value)}
               autoComplete="new-password"

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { loginUser } from '../auth/auth'
+import PasswordInput from '../components/PasswordInput'
 
 export default function LoginPage({ onLoginSuccess, initialMessage = '' }) {
   const [username, setUsername] = useState('')
@@ -50,8 +51,7 @@ export default function LoginPage({ onLoginSuccess, initialMessage = '' }) {
 
           <label className="login-field">
             <span>Contraseña</span>
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               autoComplete="current-password"
