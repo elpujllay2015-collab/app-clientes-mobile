@@ -30,6 +30,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Origenes de confianza para CSRF (form del admin por HTTPS)
+CSRF_TRUSTED_ORIGINS = [
+    'https://app-clientes-mobile-production.up.railway.app',
+    'https://*.up.railway.app',
+    'https://*.nerca.ar',
+]
+
 
 # Application definition
 
