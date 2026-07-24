@@ -3,6 +3,7 @@ import { fetchClientes } from '../api/clientesApi'
 import { fetchProductos } from '../api/productosApi'
 import { createVenta } from '../api/ventasApi'
 import { fetchProveedores } from '../api/proveedoresApi'
+import { hoyISOLocal } from '../utils/fecha'
 
 function formatMoney(value) {
   const number = Number(value || 0)
@@ -156,7 +157,7 @@ export default function NuevaVentaPage() {
     setSaving(true)
     try {
       const payload = {
-        fecha_compra: new Date().toISOString().slice(0, 10),
+        fecha_compra: hoyISOLocal(),
         cliente_id: Number(clienteId),
         proveedor_id: Number(proveedorId),
         numero_factura: numeroFactura.trim(),

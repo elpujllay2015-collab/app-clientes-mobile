@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchClientes } from '../api/clientesApi'
 import { fetchVentas } from '../api/ventasApi'
 import { fetchPagos } from '../api/pagosApi'
+import { hoyISOLocal } from '../utils/fecha'
 
 const primaryActions = [
   { key: 'ventas', title: 'Nueva venta', subtitle: 'Registrar venta', icon: '🧾', tone: 'sale' },
@@ -18,13 +19,6 @@ const secondaryActions = [
 
 function money(value) {
   return `$ ${Number(value || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`
-}
-
-function todayIsoLocal() {
-  const now = new Date()
-  const offset = now.getTimezoneOffset()
-  const local = new Date(now.getTime() - offset * 60000)
-  return local.toISOString().slice(0, 10)
 }
 
 function badgeMeta(estado) {
@@ -65,7 +59,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
   }, [])
 
   const dashboard = useMemo(() => {
-    const today = todayIsoLocal()
+    const today = hoyISOLocal()
     const ventasHoy = ventas.filter((venta) => String(venta.fecha_compra) === today)
     const pagosHoy = pagos.filter((pago) => String(pago.fecha_pago) === today)
 

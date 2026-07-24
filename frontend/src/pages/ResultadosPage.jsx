@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { fetchResumenResultados, fetchResultadosPorProveedor, fetchResultadosVentas } from '../api/resultadosApi'
 import { fetchProveedores } from '../api/proveedoresApi'
+import { hoyISOLocal } from '../utils/fecha'
 
 function formatMoney(value) {
   const number = Number(value || 0)
@@ -8,7 +9,7 @@ function formatMoney(value) {
 }
 
 function todayIso() {
-  return new Date().toISOString().slice(0, 10)
+  return hoyISOLocal()
 }
 
 export default function ResultadosPage() {

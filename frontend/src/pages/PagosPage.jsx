@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchClientes } from '../api/clientesApi'
 import { createPago } from '../api/pagosApi'
 import { fetchVentas } from '../api/ventasApi'
+import { hoyISOLocal } from '../utils/fecha'
 
 function formatMoney(value) {
   const number = Number(value || 0)
@@ -59,7 +60,7 @@ export default function PagosPage() {
     setSaving(true)
     try {
       const response = await createPago({
-        fecha_pago: new Date().toISOString().slice(0, 10),
+        fecha_pago: hoyISOLocal(),
         cliente_id: Number(clienteId),
         venta_id: Number(ventaId),
         monto,
