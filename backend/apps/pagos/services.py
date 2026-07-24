@@ -41,9 +41,9 @@ def _recalcular_totales_venta(venta):
 
 
 @transaction.atomic
-def registrar_pago_venta(*, fecha_pago, cliente_id, venta_id, monto, forma_pago, observaciones=""):
-    cliente = Cliente.objects.get(id=cliente_id, activo=True)
-    venta = Venta.objects.select_for_update().get(id=venta_id, activa=True)
+def registrar_pago_venta(*, empresa, fecha_pago, cliente_id, venta_id, monto, forma_pago, observaciones=""):
+    cliente = Cliente.objects.get(id=cliente_id, activo=True, empresa=empresa)
+    venta = Venta.objects.select_for_update().get(id=venta_id, activa=True, empresa=empresa)
 
     if venta.cliente_id != cliente.id:
         raise ValueError("El cliente del pago no coincide con el cliente de la venta.")
@@ -57,6 +57,7 @@ def registrar_pago_venta(*, fecha_pago, cliente_id, venta_id, monto, forma_pago,
         raise ValueError("El monto del pago no puede superar el saldo pendiente.")
 
     pago = Pago.objects.create(
+        empresa=empresa,
         fecha_pago=fecha_pago,
         cliente=cliente,
         venta=venta,

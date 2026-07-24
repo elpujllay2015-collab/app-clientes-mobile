@@ -6,6 +6,8 @@ from apps.productos.models import Producto
 
 
 class Proveedor(TimeStampedModel):
+    id = models.AutoField(primary_key=True)
+    empresa = models.ForeignKey('empresas.Empresa', on_delete=models.PROTECT, related_name='proveedores', null=True, blank=True)
     nombre = models.CharField(max_length=150)
     activo = models.BooleanField(default=True)
 
@@ -23,6 +25,8 @@ class Venta(TimeStampedModel):
         ('PARCIAL', 'Parcial'),
         ('PAGADO', 'Pagado'),
     ]
+
+    empresa = models.ForeignKey('empresas.Empresa', on_delete=models.PROTECT, related_name='ventas', null=True, blank=True)
 
     fecha_compra = models.DateField()  # <-- LÍNEA INSERTADA
 

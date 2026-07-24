@@ -15,14 +15,15 @@ def _to_decimal(value):
 
 
 @transaction.atomic
-def crear_venta_con_items(*, fecha_compra, cliente_id, proveedor_id, items, numero_factura="", observaciones=""):
+def crear_venta_con_items(*, empresa, fecha_compra, cliente_id, proveedor_id, items, numero_factura="", observaciones=""):
     if not items:
         raise ValueError("La venta debe tener al menos un item.")
 
-    cliente = Cliente.objects.get(id=cliente_id, activo=True)
-    proveedor = Proveedor.objects.get(id=proveedor_id, activo=True)
+    cliente = Cliente.objects.get(id=cliente_id, activo=True, empresa=empresa)
+    proveedor = Proveedor.objects.get(id=proveedor_id, activo=True, empresa=empresa)
 
     venta = Venta.objects.create(
+        empresa=empresa,
         proveedor=proveedor,
         fecha_compra=fecha_compra,
         cliente=cliente,
@@ -43,7 +44,7 @@ def crear_venta_con_items(*, fecha_compra, cliente_id, proveedor_id, items, nume
     total_venta = Decimal("0.00")
 
     for item in items:
-        producto = Producto.objects.get(id=item["producto_id"], activo=True)
+        producto = Producto.objects.get(id=item["producto_id"], activo=True, empresa=empresa)
 
         cantidad = _to_decimal(item["cantidad"])
         costo_unitario = _to_decimal(item["costo_unitario"])

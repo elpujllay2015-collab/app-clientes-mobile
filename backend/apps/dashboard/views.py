@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.ventas.models import Venta
+from apps.empresas.scoping import empresa_de_usuario
 
 
 class DashboardResumenView(APIView):
@@ -11,7 +12,7 @@ class DashboardResumenView(APIView):
         fecha_hasta = request.GET.get('fecha_hasta')
         proveedor_id = request.GET.get('proveedor_id')
 
-        qs = Venta.objects.filter(activa=True)
+        qs = Venta.objects.filter(activa=True, empresa=empresa_de_usuario(request.user))
         if fecha_desde:
             qs = qs.filter(fecha_compra__gte=fecha_desde)
         if fecha_hasta:
@@ -47,7 +48,7 @@ class ResultadosVentasView(APIView):
         fecha_hasta = request.GET.get('fecha_hasta')
         proveedor_id = request.GET.get('proveedor_id')
 
-        qs = Venta.objects.filter(activa=True).order_by('-fecha_compra', '-id')
+        qs = Venta.objects.filter(activa=True, empresa=empresa_de_usuario(request.user)).order_by('-fecha_compra', '-id')
         if fecha_desde:
             qs = qs.filter(fecha_compra__gte=fecha_desde)
         if fecha_hasta:
@@ -79,7 +80,7 @@ class ResultadosPorProveedorView(APIView):
         fecha_hasta = request.GET.get('fecha_hasta')
         proveedor_id = request.GET.get('proveedor_id')
 
-        qs = Venta.objects.select_related('proveedor', 'cliente').filter(activa=True).order_by('proveedor__nombre', 'cliente_nombre_snapshot', '-fecha_compra', '-id')
+        qs = Venta.objects.select_related('proveedor', 'cliente').filter(activa=True, empresa=empresa_de_usuario(request.user)).order_by('proveedor__nombre', 'cliente_nombre_snapshot', '-fecha_compra', '-id')
         if fecha_desde:
             qs = qs.filter(fecha_compra__gte=fecha_desde)
         if fecha_hasta:

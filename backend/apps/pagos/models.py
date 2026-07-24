@@ -14,6 +14,8 @@ class Pago(TimeStampedModel):
         ('OTRO', 'Otro'),
     ]
 
+    empresa = models.ForeignKey('empresas.Empresa', on_delete=models.PROTECT, related_name='pagos', null=True, blank=True)
+
     fecha_pago = models.DateField()  # <-- LÍNEA INSERTADA
 
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, related_name='pagos')  # <-- LÍNEA INSERTADA

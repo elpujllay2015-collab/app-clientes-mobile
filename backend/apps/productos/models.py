@@ -4,6 +4,7 @@ from common.models import TimeStampedModel
 
 
 class Producto(TimeStampedModel):
+    empresa = models.ForeignKey('empresas.Empresa', on_delete=models.PROTECT, related_name='productos', null=True, blank=True)
     nombre = models.CharField(max_length=150, db_index=True)  # <-- LÍNEA INSERTADA
     costo = models.DecimalField(max_digits=12, decimal_places=2, default=0)  # <-- LÍNEA INSERTADA
     precio_venta = models.DecimalField(max_digits=12, decimal_places=2, default=0)  # <-- LÍNEA INSERTADA

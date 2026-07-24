@@ -2,6 +2,7 @@ from django.db import models
 from common.models import TimeStampedModel
 
 class Cliente(TimeStampedModel):
+    empresa = models.ForeignKey('empresas.Empresa', on_delete=models.PROTECT, related_name='clientes', null=True, blank=True)
     nombre = models.CharField(max_length=150, db_index=True)
     cuit = models.CharField(max_length=20, blank=True, default='', db_index=True)
     telefono = models.CharField(max_length=30, blank=True, default='')

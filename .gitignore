@@ -17,3 +17,6 @@ backend/cd
 Backups/
 Diseño*.txt
 Mejoras App.txt
+
+# SQLite de prueba local
+*.sqlite3

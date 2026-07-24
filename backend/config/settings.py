@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
+    'apps.empresas',
     'apps.clientes',
     'apps.productos',
     'apps.ventas',

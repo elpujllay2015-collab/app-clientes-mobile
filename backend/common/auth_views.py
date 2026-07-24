@@ -11,6 +11,8 @@ class CurrentUserView(APIView):
 
     def get(self, request):
         user = request.user
+        perfil = getattr(user, 'perfil', None)
+        empresa = perfil.empresa if perfil else None
         return Response({
             'id': user.id,
             'username': user.username,
@@ -19,6 +21,8 @@ class CurrentUserView(APIView):
             'last_name': user.last_name,
             'is_staff': user.is_staff,
             'is_superuser': user.is_superuser,
+            'empresa_id': empresa.id if empresa else None,
+            'empresa_nombre': empresa.nombre if empresa else None,
         })
 
 

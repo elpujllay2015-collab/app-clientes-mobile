@@ -1,7 +1,10 @@
 from rest_framework import viewsets
+
+from apps.empresas.scoping import EmpresaScopedMixin
 from apps.productos.models import Producto
 from .serializers import ProductoSerializer
 
-class ProductoViewSet(viewsets.ModelViewSet):
+
+class ProductoViewSet(EmpresaScopedMixin, viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
