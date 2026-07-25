@@ -3,8 +3,6 @@ import { fetchClientes } from '../api/clientesApi'
 import { fetchVentas } from '../api/ventasApi'
 import { fetchPagos } from '../api/pagosApi'
 
-const PAGE_SIZE = 10
-
 function formatMoney(value) {
   const number = Number(value || 0)
   return `$ ${number.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -90,7 +88,6 @@ export default function CuentaCorrientePage() {
   const [clienteId, setClienteId] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [page, setPage] = useState(1)
 
   useEffect(() => {
     let mounted = true
@@ -222,16 +219,8 @@ export default function CuentaCorrientePage() {
     }))
   }, [clientesOrdenados, saldoPorCliente, deudaMasAntiguaPorCliente])
 
-  const totalPages = Math.max(1, Math.ceil(clientesConSaldo.length / PAGE_SIZE))
-
-  useEffect(() => {
-    setPage((currentPage) => Math.min(currentPage, totalPages))
-  }, [totalPages])
-
-  const clientesPaginados = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE
-    return clientesConSaldo.slice(start, start + PAGE_SIZE)
-  }, [clientesConSaldo, page])
+  // Se muestran todos los clientes con saldo en una sola lista con scroll (sin paginar).
+  const clientesPaginados = clientesConSaldo
 
   const saldoTotalGeneral = useMemo(() => {
     return clientesConSaldo.reduce((acc, cliente) => acc + Number(cliente.saldo_actual || 0), 0)
@@ -282,10 +271,6 @@ export default function CuentaCorrientePage() {
   const handleVolverAlResumen = () => {
     setClienteId('')
   }
-
-  const paginationNumbers = useMemo(() => {
-    return Array.from({ length: totalPages }, (_, index) => index + 1)
-  }, [totalPages])
 
   const renderMetricCard = (label, value, helperText, tone = 'neutral') => (
     <article
@@ -357,7 +342,7 @@ export default function CuentaCorrientePage() {
         }}
       >
         <strong style={{ fontSize: '24px', color: '#0f2233' }}>Clientes</strong>
-        <span style={{ color: '#5b7083' }}>Orden alfabético · hasta {PAGE_SIZE} por página</span>
+        <span style={{ color: '#5b7083' }}>Orden alfabético · {clientesPaginados.length} en total</span>
       </article>
 
       {clientesPaginados.length === 0 ? (
@@ -483,64 +468,6 @@ export default function CuentaCorrientePage() {
             </article>
           )
         })
-      )}
-
-      {totalPages > 1 && (
-        <article
-          className="list-card"
-          style={{
-            borderRadius: '18px',
-            padding: '14px 16px',
-            border: '1px solid #d7e1ea',
-            background: '#ffffff',
-            boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginBottom: '12px' }}>
-            <span style={{ color: '#5b7083', fontSize: '13px' }}>Página {page} de {totalPages}</span>
-            <div className="actions-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <button
-                className="secondary-btn"
-                type="button"
-                onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))}
-                disabled={page === 1}
-                style={{ borderRadius: '10px', padding: '10px 12px' }}
-              >
-                Anterior
-              </button>
-              <button
-                className="secondary-btn"
-                type="button"
-                onClick={() => setPage((currentPage) => Math.min(totalPages, currentPage + 1))}
-                disabled={page === totalPages}
-                style={{ borderRadius: '10px', padding: '10px 12px' }}
-              >
-                Siguiente
-              </button>
-            </div>
-          </div>
-
-          <div className="actions-row" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            {paginationNumbers.map((pageNumber) => (
-              <button
-                key={pageNumber}
-                type="button"
-                onClick={() => setPage(pageNumber)}
-                style={{
-                  minWidth: '42px',
-                  height: '42px',
-                  borderRadius: '12px',
-                  border: pageNumber === page ? '1px solid #133b5c' : '1px solid #d7e1ea',
-                  background: pageNumber === page ? '#133b5c' : '#ffffff',
-                  color: pageNumber === page ? '#ffffff' : '#133b5c',
-                  fontWeight: 700,
-                }}
-              >
-                {pageNumber}
-              </button>
-            ))}
-          </div>
-        </article>
       )}
     </>
   )
