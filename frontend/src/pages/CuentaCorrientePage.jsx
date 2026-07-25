@@ -3,9 +3,16 @@ import { fetchClientes } from '../api/clientesApi'
 import { fetchVentas } from '../api/ventasApi'
 import { fetchPagos } from '../api/pagosApi'
 import { formatMoney } from '../utils/money'
+import DetalleVentaSheet from '../components/DetalleVentaSheet'
 
 function normalizeText(value) {
   return String(value || '').trim().toLowerCase()
+}
+
+function badgeMeta(estado) {
+  if (estado === 'PAGADO') return { label: 'Pagado', className: 'home-badge-paid' }
+  if (estado === 'PARCIAL') return { label: 'Parcial', className: 'home-badge-partial' }
+  return { label: 'Pendiente', className: 'home-badge-pending' }
 }
 
 function getSaldoToneClass(value) {
@@ -84,6 +91,7 @@ export default function CuentaCorrientePage() {
   const [clienteId, setClienteId] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [detalleVentaId, setDetalleVentaId] = useState(null)
 
   useEffect(() => {
     let mounted = true
@@ -548,31 +556,34 @@ export default function CuentaCorrientePage() {
         </article>
       )}
 
-      {ventasCliente.map((venta) => (
-        <article
-          className="list-card"
-          key={venta.id}
-          style={{
-            borderRadius: '18px',
-            padding: '18px',
-            border: '1px solid #d7e1ea',
-            background: '#ffffff',
-            boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)',
-            display: 'grid',
-            gap: '6px',
-          }}
-        >
-          <strong style={{ fontSize: '18px', color: '#0f2233' }}>Venta #{venta.id}</strong>
-          <span>Proveedor: {venta.proveedor_nombre || '-'}</span>
-          <span>Fecha: {venta.fecha_compra}</span>
-          <span>Factura: {venta.numero_factura || '-'}</span>
-          <span>Total venta: {formatMoney(venta.total_venta)}</span>
-          <span>Total pagado: {formatMoney(venta.total_pagado)}</span>
-          <span>Saldo pendiente: {formatMoney(venta.saldo_pendiente)}</span>
-          <span>Estado: {venta.estado}</span>
-          <span>Resultado venta: {formatMoney(venta.resultado_venta)}</span>
-        </article>
-      ))}
+      {ventasCliente.map((venta) => {
+        const badge = badgeMeta(venta.estado)
+        return (
+          <button
+            type="button"
+            className="cc-venta-card"
+            key={venta.id}
+            onClick={() => setDetalleVentaId(venta.id)}
+          >
+            <div className="cc-venta-top">
+              <div style={{ minWidth: 0 }}>
+                <div className="cc-venta-title">Venta #{venta.id}</div>
+                <div className="cc-venta-sub">
+                  {venta.proveedor_nombre || '—'} · {(venta.fecha_compra || '').split('-').reverse().join('/')} · Factura {venta.numero_factura || '—'}
+                </div>
+              </div>
+              <span className={`home-badge ${badge.className}`}>{badge.label}</span>
+            </div>
+            <div className="cc-venta-bottom">
+              <div className="cc-venta-total">
+                <small>Total</small>
+                {formatMoney(venta.total_venta)}
+              </div>
+              <span className="cc-venta-open">Ver detalle ▾</span>
+            </div>
+          </button>
+        )
+      })}
 
       <article
         className="list-card section-title-card"
@@ -683,6 +694,10 @@ export default function CuentaCorrientePage() {
 
       {!loading && !clienteSeleccionado && renderListadoGeneral()}
       {!loading && clienteSeleccionado && renderDetalleCliente()}
+
+      {detalleVentaId && (
+        <DetalleVentaSheet ventaId={detalleVentaId} onClose={() => setDetalleVentaId(null)} />
+      )}
     </div>
   )
 }

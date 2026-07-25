@@ -2524,3 +2524,318 @@ textarea {
   font-size: 16px;
   font-weight: 800;
 }
+
+/* --- Tarjeta compacta de venta (Cuenta corriente) --- */
+.cc-venta-card {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px 15px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cc-venta-card:active {
+  transform: scale(0.99);
+}
+
+.cc-venta-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cc-venta-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f2233;
+}
+
+.cc-venta-sub {
+  font-size: 12.5px;
+  color: #8a93a3;
+  margin-top: 2px;
+}
+
+.cc-venta-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.cc-venta-total {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f2233;
+  font-variant-numeric: tabular-nums;
+}
+
+.cc-venta-total small {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8a93a3;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cc-venta-open {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* --- Bottom-sheet: detalle de venta --- */
+.dv-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: dv-fade 0.18s ease both;
+}
+
+.dv-panel {
+  width: 100%;
+  max-width: 430px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  padding: 8px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.22);
+  animation: dv-up 0.24s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+.dv-grip {
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: #d7dee8;
+  margin: 6px auto 12px;
+}
+
+.dv-state {
+  padding: 26px 4px;
+  text-align: center;
+  color: #5b7083;
+  font-weight: 600;
+}
+
+.dv-state-error {
+  color: #b42318;
+}
+
+.dv-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eef1f5;
+}
+
+.dv-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f2233;
+}
+
+.dv-sub {
+  font-size: 12.5px;
+  color: #8a93a3;
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+.dv-seclabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a93a3;
+  margin: 16px 0 8px;
+}
+
+.dv-empty {
+  color: #8a93a3;
+  font-size: 13.5px;
+  padding: 4px 0 2px;
+}
+
+.dv-line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #f2f4f8;
+}
+
+.dv-line:last-of-type {
+  border-bottom: none;
+}
+
+.dv-line-prod {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #0f2233;
+}
+
+.dv-line-qty {
+  font-size: 12px;
+  color: #8a93a3;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dv-line-sub {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f2233;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dv-totbox {
+  margin-top: 14px;
+  background: #f7f9fc;
+  border: 1px solid #eef1f5;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.dv-tot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 14px;
+}
+
+.dv-tot-big {
+  font-size: 16px;
+}
+
+.dv-tot-big strong {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dv-tot-muted {
+  color: #8a93a3;
+}
+
+.dv-gan {
+  color: #15803d;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dv-pay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f7f9fc;
+  border: 1px solid #eef1f5;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+.dv-pay-main {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f2233;
+}
+
+.dv-pay-date {
+  font-size: 11.5px;
+  color: #8a93a3;
+  margin-top: 1px;
+}
+
+.dv-pay-amt {
+  font-size: 14px;
+  font-weight: 700;
+  color: #15803d;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dv-saldo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 13px 15px;
+  background: #fff5f5;
+  border: 1px solid #f6dcdc;
+  border-radius: 14px;
+}
+
+.dv-saldo span {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f2233;
+}
+
+.dv-saldo strong {
+  font-size: 19px;
+  font-weight: 800;
+  color: #b42318;
+  font-variant-numeric: tabular-nums;
+}
+
+.dv-saldo-ok {
+  background: #f0fdf4;
+  border-color: #cdeed7;
+}
+
+.dv-saldo-ok strong {
+  color: #15803d;
+}
+
+.dv-close {
+  width: 100%;
+  margin-top: 18px;
+  height: 50px;
+  border: 1px solid #d7dee8;
+  border-radius: 14px;
+  background: #f4f7fb;
+  color: #0f2233;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dv-close:active {
+  background: #e9eef6;
+}
+
+@keyframes dv-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dv-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dv-overlay,
+  .dv-panel {
+    animation: none;
+  }
+}
