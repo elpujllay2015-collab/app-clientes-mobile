@@ -150,7 +150,7 @@ export default function PagosProveedorPage({ onNavigate }) {
               boxShadow: '0 12px 28px rgba(15, 23, 42, 0.06)',
             }}
           >
-            <span style={{ fontSize: '12px', color: '#5b7083' }}>Caja de Leo (plata en mano)</span>
+            <span style={{ fontSize: '12px', color: '#5b7083' }}>Caja de Leo</span>
             <strong style={{ display: 'block', fontSize: '28px', color: cajaLeo >= 0 ? '#027a48' : '#b42318', marginTop: '4px' }}>
               {formatMoney(cajaLeo)}
             </strong>
