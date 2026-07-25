@@ -38,6 +38,7 @@ class PagoViewSet(EmpresaScopedMixin, viewsets.ModelViewSet):
                     monto=serializer.validated_data['monto'],
                     forma_pago=serializer.validated_data['forma_pago'],
                     observaciones=serializer.validated_data.get('observaciones', ''),
+                    directo_a_proveedor=serializer.validated_data.get('directo_a_proveedor', False),
                 )
                 pago.venta = venta
             else:

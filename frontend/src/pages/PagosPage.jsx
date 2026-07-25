@@ -13,6 +13,7 @@ export default function PagosPage() {
   const [monto, setMonto] = useState('')
   const [formaPago, setFormaPago] = useState('EFECTIVO')
   const [observaciones, setObservaciones] = useState('')
+  const [directoProveedor, setDirectoProveedor] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -63,6 +64,7 @@ export default function PagosPage() {
         fecha_pago: hoyISOLocal(),
         cliente_id: Number(clienteId),
         venta_id: ventaId === 'INICIAL' ? null : Number(ventaId),
+        directo_a_proveedor: ventaId && ventaId !== 'INICIAL' ? directoProveedor : false,
         monto,
         forma_pago: formaPago,
         observaciones,
@@ -72,6 +74,7 @@ export default function PagosPage() {
       setMonto('')
       setFormaPago('EFECTIVO')
       setObservaciones('')
+      setDirectoProveedor(false)
       await load()
     } catch (err) {
       setError(err.message || 'No se pudo registrar el pago')
@@ -100,7 +103,7 @@ export default function PagosPage() {
             <div className="pagos-pro-grid">
               <div className="pagos-pro-field">
                 <span className="pagos-pro-field-label">Cliente</span>
-                <select className="input pagos-pro-input" value={clienteId} onChange={(e) => { setClienteId(e.target.value); setVentaId('') }}>
+                <select className="input pagos-pro-input" value={clienteId} onChange={(e) => { setClienteId(e.target.value); setVentaId(''); setDirectoProveedor(false) }}>
                   <option value="">Seleccionar cliente</option>
                   {clientes.map((cliente) => (
                     <option key={cliente.id} value={cliente.id}>
@@ -111,8 +114,8 @@ export default function PagosPage() {
               </div>
 
               <div className="pagos-pro-field">
-                <span className="pagos-pro-field-label">Destino del pago</span>
-                <select className="input pagos-pro-input" value={ventaId} onChange={(e) => setVentaId(e.target.value)}>
+                <span className="pagos-pro-field-label">Aplicar a</span>
+                <select className="input pagos-pro-input" value={ventaId} onChange={(e) => { setVentaId(e.target.value); setDirectoProveedor(false) }}>
                   <option value="">Seleccionar destino</option>
                   {saldoInicialPendiente > 0 && (
                     <option value="INICIAL">Cuenta inicial · Saldo {formatMoney(saldoInicialPendiente)}</option>
@@ -125,6 +128,22 @@ export default function PagosPage() {
                 </select>
               </div>
             </div>
+
+            {ventaSeleccionada && (
+              <div className="pagos-pro-field" style={{ marginTop: '12px' }}>
+                <span className="pagos-pro-field-label">¿A dónde fue la plata?</span>
+                <select
+                  className="input pagos-pro-input"
+                  value={directoProveedor ? 'PROVEEDOR' : 'LEO'}
+                  onChange={(e) => setDirectoProveedor(e.target.value === 'PROVEEDOR')}
+                >
+                  <option value="LEO">Me pagó a mí (Leo)</option>
+                  <option value="PROVEEDOR">
+                    Le pagó directo{ventaSeleccionada.proveedor_nombre ? ` a ${ventaSeleccionada.proveedor_nombre}` : ' al proveedor'}
+                  </option>
+                </select>
+              </div>
+            )}
           </article>
 
           {ventaSeleccionada && (

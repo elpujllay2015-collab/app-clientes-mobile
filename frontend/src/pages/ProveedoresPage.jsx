@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createProveedor, fetchProveedores, updateProveedor } from '../api/proveedoresApi'
 import { fetchVentas } from '../api/ventasApi'
+import { fetchPagos } from '../api/pagosApi'
 import { fetchPagosProveedor } from '../api/pagosProveedorApi'
 import { formatMoney } from '../utils/money'
 
@@ -17,6 +18,7 @@ export default function ProveedoresPage({ onNavigate }) {
   const [proveedores, setProveedores] = useState([])
   const [ventas, setVentas] = useState([])
   const [pagosProveedor, setPagosProveedor] = useState([])
+  const [pagos, setPagos] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -29,10 +31,11 @@ export default function ProveedoresPage({ onNavigate }) {
     setLoading(true)
     setError('')
     try {
-      const [proveedoresData, ventasData, pagosProveedorData] = await Promise.all([fetchProveedores(), fetchVentas(), fetchPagosProveedor()])
+      const [proveedoresData, ventasData, pagosProveedorData, pagosData] = await Promise.all([fetchProveedores(), fetchVentas(), fetchPagosProveedor(), fetchPagos()])
       setProveedores(proveedoresData)
       setVentas(ventasData)
       setPagosProveedor(pagosProveedorData)
+      setPagos(pagosData)
     } catch (err) {
       setError('No se pudieron cargar los proveedores')
     } finally {
@@ -56,7 +59,9 @@ export default function ProveedoresPage({ onNavigate }) {
     proveedores.forEach((proveedor) => {
       map.set(String(proveedor.id), Number(proveedor.saldo_inicial || 0))
     })
+    const proveedorDeVenta = new Map()
     ventas.forEach((venta) => {
+      proveedorDeVenta.set(String(venta.id), venta.proveedor != null ? String(venta.proveedor) : '')
       if (venta.activa === false) return
       const key = venta.proveedor != null ? String(venta.proveedor) : ''
       if (!key || !map.has(key)) return
@@ -68,8 +73,15 @@ export default function ProveedoresPage({ onNavigate }) {
       if (!key || !map.has(key)) return
       map.set(key, Number(map.get(key) || 0) - Number(pago.monto || 0))
     })
+    // Pagos de clientes que fueron DIRECTO al proveedor de la venta (Etapa 3).
+    pagos.forEach((pago) => {
+      if (pago.activo === false || !pago.directo_a_proveedor || pago.venta == null) return
+      const key = proveedorDeVenta.get(String(pago.venta)) || ''
+      if (!key || !map.has(key)) return
+      map.set(key, Number(map.get(key) || 0) - Number(pago.monto || 0))
+    })
     return map
-  }, [proveedores, ventas, pagosProveedor])
+  }, [proveedores, ventas, pagosProveedor, pagos])
 
   function resetFormState() {
     setEditingId(null)

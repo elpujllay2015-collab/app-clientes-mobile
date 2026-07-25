@@ -8,6 +8,7 @@ class PagoCreateSerializer(serializers.Serializer):
     fecha_pago = serializers.DateField()  # <-- LÍNEA INSERTADA
     cliente_id = serializers.IntegerField()  # <-- LÍNEA INSERTADA
     venta_id = serializers.IntegerField(required=False, allow_null=True)  # None = pago a cuenta inicial
+    directo_a_proveedor = serializers.BooleanField(required=False, default=False)  # cliente pagó directo al proveedor de la venta
     monto = serializers.DecimalField(max_digits=12, decimal_places=2)  # <-- LÍNEA INSERTADA
     forma_pago = serializers.ChoiceField(choices=Pago.FORMA_PAGO_CHOICES)  # <-- LÍNEA INSERTADA
     observaciones = serializers.CharField(required=False, allow_blank=True, default='')  # <-- LÍNEA INSERTADA
@@ -34,6 +35,7 @@ class PagoListSerializer(serializers.ModelSerializer):
             'forma_pago',
             'observaciones',
             'activo',
+            'directo_a_proveedor',
             'created_at',
             'updated_at',
             'venta_estado',

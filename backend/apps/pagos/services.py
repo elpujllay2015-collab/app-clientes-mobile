@@ -49,7 +49,7 @@ def _recalcular_totales_venta(venta):
 
 
 @transaction.atomic
-def registrar_pago_venta(*, empresa, fecha_pago, cliente_id, venta_id, monto, forma_pago, observaciones=""):
+def registrar_pago_venta(*, empresa, fecha_pago, cliente_id, venta_id, monto, forma_pago, observaciones="", directo_a_proveedor=False):
     cliente = Cliente.objects.get(id=cliente_id, activo=True, empresa=empresa)
     venta = Venta.objects.select_for_update().get(id=venta_id, activa=True, empresa=empresa)
 
@@ -73,6 +73,7 @@ def registrar_pago_venta(*, empresa, fecha_pago, cliente_id, venta_id, monto, fo
         forma_pago=forma_pago,
         observaciones=observaciones or "",
         activo=True,
+        directo_a_proveedor=bool(directo_a_proveedor),
     )
 
     venta = _recalcular_totales_venta(venta)

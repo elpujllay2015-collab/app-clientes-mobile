@@ -28,6 +28,10 @@ class Pago(TimeStampedModel):
     observaciones = models.TextField(blank=True, default='')  # <-- LÍNEA INSERTADA
     activo = models.BooleanField(default=True)  # <-- LÍNEA INSERTADA
 
+    # Etapa 3: True = el cliente le pagó DIRECTO al proveedor de la venta
+    # (baja el saldo de ese proveedor y NO suma a la Caja de Leo).
+    directo_a_proveedor = models.BooleanField(default=False)
+
     class Meta:
         db_table = 'pagos_pago'  # <-- LÍNEA INSERTADA
         ordering = ['-fecha_pago', '-id']  # <-- LÍNEA INSERTADA

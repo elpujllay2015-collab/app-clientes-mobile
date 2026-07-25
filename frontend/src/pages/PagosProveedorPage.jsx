@@ -51,7 +51,9 @@ export default function PagosProveedorPage({ onNavigate }) {
     proveedores.forEach((proveedor) => {
       map.set(String(proveedor.id), Number(proveedor.saldo_inicial || 0))
     })
+    const proveedorDeVenta = new Map()
     ventas.forEach((venta) => {
+      proveedorDeVenta.set(String(venta.id), venta.proveedor != null ? String(venta.proveedor) : '')
       if (venta.activa === false) return
       const key = venta.proveedor != null ? String(venta.proveedor) : ''
       if (!key || !map.has(key)) return
@@ -63,12 +65,20 @@ export default function PagosProveedorPage({ onNavigate }) {
       if (!key || !map.has(key)) return
       map.set(key, Number(map.get(key) || 0) - Number(pago.monto || 0))
     })
+    // Pagos de clientes que fueron DIRECTO al proveedor de la venta (Etapa 3).
+    pagos.forEach((pago) => {
+      if (pago.activo === false || !pago.directo_a_proveedor || pago.venta == null) return
+      const key = proveedorDeVenta.get(String(pago.venta)) || ''
+      if (!key || !map.has(key)) return
+      map.set(key, Number(map.get(key) || 0) - Number(pago.monto || 0))
+    })
     return map
-  }, [proveedores, ventas, pagosProveedor])
+  }, [proveedores, ventas, pagosProveedor, pagos])
 
-  // Caja de Leo = lo que cobró a clientes - lo que pagó a proveedores.
+  // Caja de Leo = lo que cobró a clientes (que le pagaron A EL) - lo que pagó a proveedores.
+  // Los pagos de clientes "directo al proveedor" NO pasan por la caja.
   const cajaLeo = useMemo(() => {
-    const cobrado = pagos.reduce((acc, pago) => acc + (pago.activo === false ? 0 : Number(pago.monto || 0)), 0)
+    const cobrado = pagos.reduce((acc, pago) => acc + (pago.activo === false || pago.directo_a_proveedor ? 0 : Number(pago.monto || 0)), 0)
     const pagado = pagosProveedor.reduce((acc, pago) => acc + (pago.activo === false ? 0 : Number(pago.monto || 0)), 0)
     return cobrado - pagado
   }, [pagos, pagosProveedor])
