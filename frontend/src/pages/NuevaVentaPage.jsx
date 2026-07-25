@@ -295,10 +295,6 @@ export default function NuevaVentaPage() {
                 <strong className="ventas-pro-section-title">Productos de la venta</strong>
                 <span className="ventas-pro-subtitle">Cargá cantidades y valores de cada item antes de guardar.</span>
               </div>
-
-              <button className="secondary-btn ventas-pro-add-btn" type="button" onClick={addItem}>
-                Agregar otro item
-              </button>
             </div>
 
             <div className="ventas-pro-items-stack">
@@ -382,6 +378,10 @@ export default function NuevaVentaPage() {
                 </article>
               ))}
             </div>
+
+            <button className="secondary-btn ventas-pro-add-btn ventas-pro-add-btn-full" type="button" onClick={addItem}>
+              + Agregar otro item
+            </button>
           </article>
 
           <article className="summary-card ventas-pro-summary-card">

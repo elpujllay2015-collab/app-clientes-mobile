@@ -2946,3 +2946,9 @@ textarea {
 .cv-btn-back:active {
   background: #e9eef6;
 }
+
+/* Botón "Agregar otro item" al final de la lista (Nueva venta) */
+.ventas-pro-add-btn.ventas-pro-add-btn-full {
+  width: 100%;
+  margin-top: 12px;
+}
