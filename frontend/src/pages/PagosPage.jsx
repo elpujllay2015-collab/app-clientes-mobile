@@ -212,9 +212,6 @@ export default function PagosPage({ currentUser }) {
                 <select className="input pagos-pro-input" value={formaPago} onChange={(e) => setFormaPago(e.target.value)}>
                   <option value="EFECTIVO">Efectivo</option>
                   <option value="TRANSFERENCIA">Transferencia</option>
-                  <option value="DEBITO">Débito</option>
-                  <option value="CREDITO">Crédito</option>
-                  <option value="OTRO">Otro</option>
                 </select>
               </div>
             </div>
