@@ -290,6 +290,17 @@ textarea {
   min-height: 126px;
 }
 
+/* Si el ultimo acceso queda solo (fila impar), ocupa todo el ancho centrado. */
+.home-actions-grid-secondary .home-action-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 104px;
+}
+
 .home-action-icon-wrap {
   width: 52px;
   height: 52px;
