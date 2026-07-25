@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage'
 import ClientesPage from './pages/ClientesPage'
 import ProductosPage from './pages/ProductosPage'
 import ProveedoresPage from './pages/ProveedoresPage'
+import PagosProveedorPage from './pages/PagosProveedorPage'
 import NuevaVentaPage from './pages/NuevaVentaPage'
 import PagosPage from './pages/PagosPage'
 import CuentaCorrientePage from './pages/CuentaCorrientePage'
@@ -23,6 +24,7 @@ const TABS = {
   clientes: 'Clientes',
   productos: 'Productos',
   proveedores: 'Proveedores',
+  pagosProveedor: 'Pagos a proveedor',
   ventas: 'Nueva venta',
   pagos: 'Pagos',
   resultados: 'Resultados',
@@ -182,7 +184,9 @@ export default function App() {
       case 'productos':
         return <ProductosPage />
       case 'proveedores':
-        return <ProveedoresPage />
+        return <ProveedoresPage onNavigate={setTab} />
+      case 'pagosProveedor':
+        return <PagosProveedorPage onNavigate={setTab} />
       case 'ventas':
         return <NuevaVentaPage />
       case 'pagos':

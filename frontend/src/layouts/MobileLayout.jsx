@@ -16,6 +16,7 @@ const sections = {
   clientes: { icon: 'users', tone: 'clients' },
   productos: { icon: 'package', tone: 'products' },
   proveedores: { icon: 'building', tone: 'account' },
+  pagosProveedor: { icon: 'banknote', tone: 'payment' },
   ventas: { icon: 'receipt', tone: 'sale' },
   pagos: { icon: 'banknote', tone: 'payment' },
   resultados: { icon: 'bar', tone: 'results' },

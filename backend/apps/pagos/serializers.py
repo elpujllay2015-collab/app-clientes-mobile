@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.pagos.models import Pago
+from apps.pagos.models import Pago, PagoProveedor
 from apps.ventas.models import Venta
 
 
@@ -76,3 +76,22 @@ class PagoCreateResponseSerializer(serializers.ModelSerializer):
         if obj.venta is None:
             return None
         return PagoVentaActualizadaSerializer(obj.venta).data
+
+
+class PagoProveedorSerializer(serializers.ModelSerializer):
+    proveedor_nombre = serializers.CharField(source='proveedor.nombre', read_only=True)
+
+    class Meta:
+        model = PagoProveedor
+        fields = (
+            'id',
+            'fecha_pago',
+            'proveedor',
+            'proveedor_nombre',
+            'monto',
+            'forma_pago',
+            'observaciones',
+            'activo',
+            'created_at',
+            'updated_at',
+        )

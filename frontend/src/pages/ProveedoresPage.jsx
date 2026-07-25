@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createProveedor, fetchProveedores, updateProveedor } from '../api/proveedoresApi'
 import { fetchVentas } from '../api/ventasApi'
+import { fetchPagosProveedor } from '../api/pagosProveedorApi'
 import { formatMoney } from '../utils/money'
 
 const emptyForm = {
@@ -12,9 +13,10 @@ function normalizeSaldoInput(value) {
   return String(value ?? '').replace('.', ',')
 }
 
-export default function ProveedoresPage() {
+export default function ProveedoresPage({ onNavigate }) {
   const [proveedores, setProveedores] = useState([])
   const [ventas, setVentas] = useState([])
+  const [pagosProveedor, setPagosProveedor] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -27,9 +29,10 @@ export default function ProveedoresPage() {
     setLoading(true)
     setError('')
     try {
-      const [proveedoresData, ventasData] = await Promise.all([fetchProveedores(), fetchVentas()])
+      const [proveedoresData, ventasData, pagosProveedorData] = await Promise.all([fetchProveedores(), fetchVentas(), fetchPagosProveedor()])
       setProveedores(proveedoresData)
       setVentas(ventasData)
+      setPagosProveedor(pagosProveedorData)
     } catch (err) {
       setError('No se pudieron cargar los proveedores')
     } finally {
@@ -59,8 +62,14 @@ export default function ProveedoresPage() {
       if (!key || !map.has(key)) return
       map.set(key, Number(map.get(key) || 0) + Number(venta.total_costo || 0))
     })
+    pagosProveedor.forEach((pago) => {
+      if (pago.activo === false) return
+      const key = pago.proveedor != null ? String(pago.proveedor) : ''
+      if (!key || !map.has(key)) return
+      map.set(key, Number(map.get(key) || 0) - Number(pago.monto || 0))
+    })
     return map
-  }, [proveedores, ventas])
+  }, [proveedores, ventas, pagosProveedor])
 
   function resetFormState() {
     setEditingId(null)
@@ -152,6 +161,17 @@ export default function ProveedoresPage() {
           </div>
         </div>
       </article>
+
+      {onNavigate && (
+        <button
+          className="secondary-btn"
+          type="button"
+          onClick={() => onNavigate('pagosProveedor')}
+          style={{ borderRadius: '14px', padding: '14px 16px', border: '1px solid #c9d6e3', background: '#f7fafc', fontWeight: 700, color: '#133b5c', textAlign: 'left' }}
+        >
+          Pagos a proveedor / Caja de Leo →
+        </button>
+      )}
 
       <article className="proveedores-pro-search-card">
         <div className="proveedores-pro-search-header">

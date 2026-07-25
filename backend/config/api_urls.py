@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from apps.clientes.views import ClienteViewSet
 from apps.productos.views import ProductoViewSet
 from apps.ventas.views import ProveedorViewSet, VentaViewSet
-from apps.pagos.views import PagoViewSet
+from apps.pagos.views import PagoProveedorViewSet, PagoViewSet
 from apps.dashboard.views import DashboardResumenView, ResultadosPorProveedorView, ResultadosVentasView
 from common.auth_views import ChangePasswordView, CurrentUserView
 
@@ -25,6 +25,7 @@ router.register(r'productos', ProductoViewSet)
 router.register(r'ventas', VentaViewSet)
 router.register(r'proveedores', ProveedorViewSet)
 router.register(r'pagos', PagoViewSet)
+router.register(r'pagos-proveedor', PagoProveedorViewSet)
 
 urlpatterns = [
     path('auth/login/', PublicTokenObtainPairView.as_view(), name='auth-login'),

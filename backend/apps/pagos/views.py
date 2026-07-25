@@ -1,13 +1,15 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status, viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from apps.empresas.scoping import EmpresaScopedMixin
-from apps.pagos.models import Pago
+from apps.pagos.models import Pago, PagoProveedor
 from apps.pagos.serializers import (
     PagoCreateResponseSerializer,
     PagoCreateSerializer,
     PagoListSerializer,
+    PagoProveedorSerializer,
 )
 from apps.pagos.services import registrar_pago_cuenta_inicial, registrar_pago_venta
 
@@ -53,3 +55,18 @@ class PagoViewSet(EmpresaScopedMixin, viewsets.ModelViewSet):
 
         response_serializer = PagoCreateResponseSerializer(pago)
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+
+class PagoProveedorViewSet(EmpresaScopedMixin, viewsets.ModelViewSet):
+    queryset = PagoProveedor.objects.select_related('proveedor').all()
+    serializer_class = PagoProveedorSerializer
+
+    def perform_create(self, serializer):
+        empresa = self.get_empresa()
+        proveedor = serializer.validated_data.get('proveedor')
+        if proveedor is None or proveedor.empresa_id != empresa.id:
+            raise ValidationError({'proveedor': 'El proveedor no pertenece a tu empresa.'})
+        monto = serializer.validated_data.get('monto')
+        if monto is None or monto <= 0:
+            raise ValidationError({'monto': 'El monto debe ser mayor a cero.'})
+        serializer.save(empresa=empresa)
