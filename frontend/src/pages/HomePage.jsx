@@ -113,8 +113,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
           <header className="home-header">
             <div className="home-brandbar">
               <div className="home-brand">
-                <img className="home-brand-logo" src="/logo-n.png" alt="Nerca Poquet" />
-                <span className="home-brand-name">Nerca Poquet</span>
+                <img className="home-brand-logo" src="/logo-full.png" alt="Nerca Poquet" />
               </div>
               <div className="home-brandbar-right">
                 <span className="home-brand-negocio">{negocio}</span>
