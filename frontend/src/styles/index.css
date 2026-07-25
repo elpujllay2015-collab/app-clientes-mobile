@@ -2878,3 +2878,71 @@ textarea {
 .input-with-suffix {
   padding-right: 130px;
 }
+
+/* --- Modal de confirmación de venta (reusa .dv-* del sheet) --- */
+.cv-meta {
+  margin-top: 12px;
+  background: #f7f9fc;
+  border: 1px solid #eef1f5;
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 13px;
+  color: #0f2233;
+  line-height: 1.6;
+}
+
+.cv-meta-k {
+  color: #8a93a3;
+  font-weight: 600;
+}
+
+.cv-list {
+  max-height: 40vh;
+  overflow-y: auto;
+  margin: 0 -2px;
+  padding: 0 2px;
+}
+
+.cv-val {
+  font-variant-numeric: tabular-nums;
+}
+
+.cv-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.cv-btn {
+  height: 52px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 800;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.cv-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.cv-btn-confirm {
+  background: #12344d;
+  color: #ffffff;
+}
+
+.cv-btn-confirm:active {
+  background: #0e2a3f;
+}
+
+.cv-btn-back {
+  background: #f4f7fb;
+  color: #0f2233;
+  border-color: #d7dee8;
+}
+
+.cv-btn-back:active {
+  background: #e9eef6;
+}

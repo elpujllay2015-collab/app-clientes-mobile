@@ -5,6 +5,7 @@ import { createVenta } from '../api/ventasApi'
 import { fetchProveedores } from '../api/proveedoresApi'
 import { hoyISOLocal } from '../utils/fecha'
 import { formatMoney } from '../utils/money'
+import ConfirmarVentaModal from '../components/ConfirmarVentaModal'
 
 function toNumber(value) {
   const parsed = Number(String(value || '').replace(',', '.'))
@@ -34,6 +35,7 @@ export default function NuevaVentaPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -116,7 +118,49 @@ export default function NuevaVentaPage() {
     return { totalCosto, totalVenta, totalResultado, byItem }
   }, [items])
 
-  async function handleSubmit() {
+  const clienteNombre = useMemo(
+    () => clientes.find((c) => String(c.id) === String(clienteId))?.nombre || '',
+    [clientes, clienteId],
+  )
+
+  const proveedorNombre = useMemo(
+    () => proveedores.find((p) => String(p.id) === String(proveedorId))?.nombre || '',
+    [proveedores, proveedorId],
+  )
+
+  // Ítems válidos (con producto y cantidad) resueltos con nombre y subtotal, para el modal.
+  const lineasResumen = useMemo(() => {
+    return items
+      .map((item) => {
+        const cantidad = toNumber(item.cantidad)
+        const costo = toNumber(item.costo_unitario)
+        const precio = toNumber(item.precio_unitario)
+        return {
+          nombre: productos.find((p) => String(p.id) === String(item.producto_id))?.nombre || 'Producto',
+          productoId: item.producto_id,
+          cantidad,
+          costo,
+          precio,
+          subtotal: cantidad * precio,
+        }
+      })
+      .filter((linea) => linea.productoId && linea.cantidad > 0)
+  }, [items, productos])
+
+  function buildCleanItems() {
+    return items
+      .filter((item) => item.producto_id && toNumber(item.cantidad) > 0)
+      .map((item) => ({
+        producto_id: Number(item.producto_id),
+        cantidad: Number(toNumber(item.cantidad)).toFixed(2),
+        costo_unitario: Number(toNumber(item.costo_unitario)).toFixed(2),
+        precio_unitario: Number(toNumber(item.precio_unitario)).toFixed(2),
+        observaciones: item.observaciones || '',
+      }))
+  }
+
+  // "Guardar venta": valida y, si está todo bien, abre el modal de confirmación.
+  function handleRevisarVenta() {
     setError('')
     setSuccess('')
 
@@ -135,22 +179,25 @@ export default function NuevaVentaPage() {
       return
     }
 
-    const cleanItems = items
-      .filter((item) => item.producto_id && toNumber(item.cantidad) > 0)
-      .map((item) => ({
-        producto_id: Number(item.producto_id),
-        cantidad: Number(toNumber(item.cantidad)).toFixed(2),
-        costo_unitario: Number(toNumber(item.costo_unitario)).toFixed(2),
-        precio_unitario: Number(toNumber(item.precio_unitario)).toFixed(2),
-        observaciones: item.observaciones || '',
-      }))
+    if (buildCleanItems().length === 0) {
+      setError('Tenés que cargar al menos un item válido')
+      return
+    }
 
+    setConfirmOpen(true)
+  }
+
+  // "Confirmar y guardar venta": recién acá se guarda de verdad.
+  async function handleConfirmarVenta() {
+    const cleanItems = buildCleanItems()
     if (cleanItems.length === 0) {
+      setConfirmOpen(false)
       setError('Tenés que cargar al menos un item válido')
       return
     }
 
     setSaving(true)
+    setError('')
     try {
       const payload = {
         fecha_compra: hoyISOLocal(),
@@ -165,8 +212,10 @@ export default function NuevaVentaPage() {
       setNumeroFactura('')
       setObservaciones('')
       setItems([newItem()])
+      setConfirmOpen(false)
     } catch (err) {
       setError(err.message || 'No se pudo guardar la venta')
+      setConfirmOpen(false)
     } finally {
       setSaving(false)
     }
@@ -352,10 +401,25 @@ export default function NuevaVentaPage() {
             </div>
           </article>
 
-          <button className="primary-btn ventas-pro-primary-btn" type="button" onClick={handleSubmit} disabled={saving}>
-            {saving ? 'Guardando...' : 'Guardar venta'}
+          <button className="primary-btn ventas-pro-primary-btn" type="button" onClick={handleRevisarVenta} disabled={saving}>
+            Guardar venta
           </button>
         </>
+      )}
+
+      {confirmOpen && (
+        <ConfirmarVentaModal
+          clienteNombre={clienteNombre}
+          proveedorNombre={proveedorNombre}
+          numeroFactura={numeroFactura}
+          lineas={lineasResumen}
+          totalCosto={totals.totalCosto}
+          totalVenta={totals.totalVenta}
+          totalResultado={totals.totalResultado}
+          saving={saving}
+          onConfirm={handleConfirmarVenta}
+          onCancel={() => setConfirmOpen(false)}
+        />
       )}
     </div>
   )
