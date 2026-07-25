@@ -35,7 +35,8 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
   const [error, setError] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const negocio = currentUser?.empresa_nombre || currentUser?.first_name || currentUser?.username || 'Usuario'
+  const usuarioNombre = currentUser?.username || 'Usuario'
+  const empresaNombre = currentUser?.empresa_nombre || ''
 
   useEffect(() => {
     let active = true
@@ -116,6 +117,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
                 <img className="home-brand-logo" src="/logo-full.png" alt="Nerca Poquet" />
               </div>
               <div className="home-brandbar-right">
+                {empresaNombre && <span className="home-brand-negocio">{empresaNombre}</span>}
                 <div className="home-topbar-menu">
                   <button
                     className="home-topbar-menu-btn"
@@ -142,7 +144,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
               </div>
             </div>
             <div className="home-greeting">
-              <h1 className="home-greeting-hello">Hola, {negocio}.</h1>
+              <h1 className="home-greeting-hello">Hola, {usuarioNombre}.</h1>
               <p className="home-greeting-sub">
                 {Number(dashboard.pendienteTotal || 0) > 0
                   ? (<>Tenés <strong>{money(dashboard.pendienteTotal)}</strong> por cobrar.</>)
