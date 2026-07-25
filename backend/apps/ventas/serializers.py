@@ -30,7 +30,7 @@ class VentaProveedorSerializer(serializers.ModelSerializer):
 class ProveedorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Proveedor
-        fields = ('id', 'nombre', 'activo', 'created_at', 'updated_at')
+        fields = ('id', 'nombre', 'activo', 'saldo_inicial', 'created_at', 'updated_at')
 
 
 class VentaItemReadSerializer(serializers.ModelSerializer):

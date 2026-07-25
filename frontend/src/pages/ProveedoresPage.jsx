@@ -1,12 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createProveedor, fetchProveedores, updateProveedor } from '../api/proveedoresApi'
+import { fetchVentas } from '../api/ventasApi'
+import { formatMoney } from '../utils/money'
 
 const emptyForm = {
   nombre: '',
+  saldo_inicial: '',
+}
+
+function normalizeSaldoInput(value) {
+  return String(value ?? '').replace('.', ',')
 }
 
 export default function ProveedoresPage() {
   const [proveedores, setProveedores] = useState([])
+  const [ventas, setVentas] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -19,8 +27,9 @@ export default function ProveedoresPage() {
     setLoading(true)
     setError('')
     try {
-      const data = await fetchProveedores()
-      setProveedores(data)
+      const [proveedoresData, ventasData] = await Promise.all([fetchProveedores(), fetchVentas()])
+      setProveedores(proveedoresData)
+      setVentas(ventasData)
     } catch (err) {
       setError('No se pudieron cargar los proveedores')
     } finally {
@@ -38,6 +47,21 @@ export default function ProveedoresPage() {
     return proveedores.filter((proveedor) => String(proveedor.nombre || '').toLowerCase().includes(q))
   }, [proveedores, query])
 
+  // Saldo con cada proveedor = saldo inicial + costos de sus ventas (todavía sin pagos, esos vienen en la Etapa 2).
+  const saldoPorProveedor = useMemo(() => {
+    const map = new Map()
+    proveedores.forEach((proveedor) => {
+      map.set(String(proveedor.id), Number(proveedor.saldo_inicial || 0))
+    })
+    ventas.forEach((venta) => {
+      if (venta.activa === false) return
+      const key = venta.proveedor != null ? String(venta.proveedor) : ''
+      if (!key || !map.has(key)) return
+      map.set(key, Number(map.get(key) || 0) + Number(venta.total_costo || 0))
+    })
+    return map
+  }, [proveedores, ventas])
+
   function resetFormState() {
     setEditingId(null)
     setForm(emptyForm)
@@ -47,7 +71,7 @@ export default function ProveedoresPage() {
     setError('')
     setSuccess('')
     setEditingId(proveedor.id)
-    setForm({ nombre: proveedor.nombre || '' })
+    setForm({ nombre: proveedor.nombre || '', saldo_inicial: normalizeSaldoInput(proveedor.saldo_inicial) })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -60,10 +84,17 @@ export default function ProveedoresPage() {
       return
     }
 
+    const saldoInicial = String(form.saldo_inicial || '').trim()
+    if (saldoInicial && Number.isNaN(Number(saldoInicial.replace(',', '.')))) {
+      setError('El saldo inicial debe ser un número válido')
+      return
+    }
+
     setSaving(true)
     try {
       const payload = {
         nombre: form.nombre.trim(),
+        saldo_inicial: saldoInicial ? Number(saldoInicial.replace(',', '.')).toFixed(2) : '0.00',
         activo: true,
       }
       if (editingId) {
@@ -101,7 +132,13 @@ export default function ProveedoresPage() {
             className="input proveedores-pro-input"
             placeholder="Nombre del proveedor"
             value={form.nombre}
-            onChange={(e) => setForm({ nombre: e.target.value })}
+            onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
+          />
+          <input
+            className="input proveedores-pro-input"
+            placeholder="Saldo inicial (lo que ya le debías)"
+            value={form.saldo_inicial}
+            onChange={(e) => setForm((f) => ({ ...f, saldo_inicial: e.target.value }))}
           />
           <div className="proveedores-pro-actions">
             <button className="primary-btn proveedores-pro-primary-btn" type="button" onClick={handleSubmit} disabled={saving}>
@@ -142,6 +179,18 @@ export default function ProveedoresPage() {
             <span className={`proveedores-pro-status ${proveedor.activo ? 'is-active' : 'is-inactive'}`}>
               {proveedor.activo ? 'Activo' : 'Inactivo'}
             </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: '10px' }}>
+            <span style={{ fontSize: '12px', color: '#5b7083' }}>Le debés</span>
+            <strong
+              style={{
+                fontSize: '20px',
+                color: Number(saldoPorProveedor.get(String(proveedor.id)) || 0) > 0 ? '#b42318' : '#0f2233',
+              }}
+            >
+              {formatMoney(saldoPorProveedor.get(String(proveedor.id)) || 0)}
+            </strong>
           </div>
 
           <div className="proveedores-pro-footer">

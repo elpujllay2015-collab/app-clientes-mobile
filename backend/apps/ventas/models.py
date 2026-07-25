@@ -9,6 +9,7 @@ class Proveedor(TimeStampedModel):
     id = models.AutoField(primary_key=True)
     empresa = models.ForeignKey('empresas.Empresa', on_delete=models.PROTECT, related_name='proveedores', null=True, blank=True)
     nombre = models.CharField(max_length=150)
+    saldo_inicial = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     activo = models.BooleanField(default=True)
 
     class Meta:
