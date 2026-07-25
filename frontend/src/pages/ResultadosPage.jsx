@@ -230,6 +230,7 @@ export default function ResultadosPage() {
           {ventas.map((venta) => (
             <article className="list-card" key={venta.id}>
               <strong>Venta #{venta.id} · {venta.cliente_nombre_snapshot}</strong>
+              <span>Proveedor: {venta.proveedor_nombre || '-'}</span>
               <span>Fecha: {venta.fecha_compra}</span>
               <span>Factura: {venta.numero_factura || '-'}</span>
               <span>Total costo: {formatMoney(venta.total_costo)}</span>

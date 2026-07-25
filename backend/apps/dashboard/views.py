@@ -48,7 +48,7 @@ class ResultadosVentasView(APIView):
         fecha_hasta = request.GET.get('fecha_hasta')
         proveedor_id = request.GET.get('proveedor_id')
 
-        qs = Venta.objects.filter(activa=True, empresa=empresa_de_usuario(request.user)).order_by('-fecha_compra', '-id')
+        qs = Venta.objects.select_related('proveedor').filter(activa=True, empresa=empresa_de_usuario(request.user)).order_by('-fecha_compra', '-id')
         if fecha_desde:
             qs = qs.filter(fecha_compra__gte=fecha_desde)
         if fecha_hasta:
@@ -62,6 +62,7 @@ class ResultadosVentasView(APIView):
                 'id': venta.id,
                 'fecha_compra': str(venta.fecha_compra),
                 'cliente_nombre_snapshot': venta.cliente_nombre_snapshot,
+                'proveedor_nombre': venta.proveedor.nombre if venta.proveedor_id else '',
                 'numero_factura': venta.numero_factura,
                 'total_costo': str(venta.total_costo),
                 'total_venta': str(venta.total_venta),
