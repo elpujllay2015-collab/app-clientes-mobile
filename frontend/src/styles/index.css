@@ -1053,6 +1053,7 @@ textarea {
 }
 
 .productos-pro-form-grid {
+  display: grid;
   gap: 8px;
   margin-top: 12px;
 }
@@ -2856,4 +2857,24 @@ textarea {
 
 .pagos-pro-detalle-btn:active {
   background: #eef2f8;
+}
+
+/* Rótulo gris a la derecha del input (edición de producto, precios cargados) */
+.producto-field {
+  position: relative;
+}
+
+.producto-field-suffix {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9aa4b2;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.input-with-suffix {
+  padding-right: 130px;
 }

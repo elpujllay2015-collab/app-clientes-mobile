@@ -136,8 +136,24 @@ export default function ProductosPage() {
 
         <div className="form-grid productos-pro-form-grid">
           <input className="input" placeholder="Nombre" value={form.nombre} onChange={(e) => updateField('nombre', e.target.value)} />
-          <input className="input" placeholder="Costo" value={form.costo} onChange={(e) => updateField('costo', e.target.value)} />
-          <input className="input" placeholder="Precio de venta" value={form.precio_venta} onChange={(e) => updateField('precio_venta', e.target.value)} />
+          <div className="producto-field">
+            <input
+              className={`input ${editingId ? 'input-with-suffix' : ''}`}
+              placeholder="Precio de costo"
+              value={form.costo}
+              onChange={(e) => updateField('costo', e.target.value)}
+            />
+            {editingId && <span className="producto-field-suffix">Precio de costo</span>}
+          </div>
+          <div className="producto-field">
+            <input
+              className={`input ${editingId ? 'input-with-suffix' : ''}`}
+              placeholder="Precio de venta"
+              value={form.precio_venta}
+              onChange={(e) => updateField('precio_venta', e.target.value)}
+            />
+            {editingId && <span className="producto-field-suffix">Precio de venta</span>}
+          </div>
           <div className="actions-row productos-pro-actions">
             <button className="primary-btn productos-pro-primary-btn" type="button" onClick={handleSubmit} disabled={saving}>
               {saving ? (editingId ? 'Actualizando...' : 'Guardando...') : (editingId ? 'Actualizar producto' : 'Guardar producto')}
