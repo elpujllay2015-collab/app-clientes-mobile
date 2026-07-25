@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createCliente, fetchClientes, updateCliente } from '../api/clientesApi'
-
-function formatMoney(value) {
-  const number = Number(value || 0)
-  return `$ ${number.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
+import { formatMoney } from '../utils/money'
 
 const emptyForm = {
   nombre: '',

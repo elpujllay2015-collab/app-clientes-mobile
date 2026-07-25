@@ -4,6 +4,7 @@ import { fetchVentas } from '../api/ventasApi'
 import { fetchPagos } from '../api/pagosApi'
 import { hoyISOLocal } from '../utils/fecha'
 import Icon from '../components/Icon'
+import { formatMoney as money } from '../utils/money'
 
 const primaryActions = [
   { key: 'ventas', title: 'Nueva venta', subtitle: 'Registrar venta', icon: 'receipt', tone: 'sale' },
@@ -17,10 +18,6 @@ const secondaryActions = [
   { key: 'proveedores', title: 'Proveedores', subtitle: 'Gestión', icon: 'building', tone: 'account' },
   { key: 'resultados', title: 'Resultados', subtitle: 'Res. Vta', icon: 'bar', tone: 'results' },
 ]
-
-function money(value) {
-  return `$ ${Number(value || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`
-}
 
 function badgeMeta(estado) {
   if (estado === 'PAGADO') return { label: 'Pagado', className: 'home-badge-paid' }
@@ -70,7 +67,13 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
 
     const vendidoHoy = ventasHoy.reduce((acc, venta) => acc + Number(venta.total_venta || 0), 0)
     const cobradoHoy = pagosHoy.reduce((acc, pago) => acc + Number(pago.monto || 0), 0)
-    const pendienteTotal = ventas.reduce((acc, venta) => acc + Number(venta.saldo_pendiente || 0), 0)
+    // "Por cobrar" = deuda total real: ventas pendientes + saldo inicial pendiente de cada cliente.
+    const pendienteVentas = ventas.reduce((acc, venta) => acc + Number(venta.saldo_pendiente || 0), 0)
+    const pendienteSaldoInicial = clientes.reduce(
+      (acc, cliente) => acc + Number(cliente.saldo_inicial_pendiente ?? cliente.saldo_inicial ?? 0),
+      0,
+    )
+    const pendienteTotal = pendienteVentas + pendienteSaldoInicial
 
     const clientesDestacados = clientes
       .map((cliente) => {

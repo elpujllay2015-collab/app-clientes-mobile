@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react'
 import { fetchResumenResultados, fetchResultadosPorProveedor, fetchResultadosVentas } from '../api/resultadosApi'
 import { fetchProveedores } from '../api/proveedoresApi'
 import { hoyISOLocal } from '../utils/fecha'
-
-function formatMoney(value) {
-  const number = Number(value || 0)
-  return `$ ${number.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
+import { formatMoney } from '../utils/money'
 
 function todayIso() {
   return hoyISOLocal()

@@ -4,11 +4,7 @@ import { fetchProductos } from '../api/productosApi'
 import { createVenta } from '../api/ventasApi'
 import { fetchProveedores } from '../api/proveedoresApi'
 import { hoyISOLocal } from '../utils/fecha'
-
-function formatMoney(value) {
-  const number = Number(value || 0)
-  return `$ ${number.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
+import { formatMoney } from '../utils/money'
 
 function toNumber(value) {
   const parsed = Number(String(value || '').replace(',', '.'))

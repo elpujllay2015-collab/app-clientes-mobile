@@ -3,11 +3,7 @@ import { fetchClientes } from '../api/clientesApi'
 import { createPago } from '../api/pagosApi'
 import { fetchVentas } from '../api/ventasApi'
 import { hoyISOLocal } from '../utils/fecha'
-
-function formatMoney(value) {
-  const number = Number(value || 0)
-  return `$ ${number.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
+import { formatMoney } from '../utils/money'
 
 export default function PagosPage() {
   const [clientes, setClientes] = useState([])

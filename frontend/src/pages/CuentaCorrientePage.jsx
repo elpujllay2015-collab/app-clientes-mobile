@@ -2,11 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { fetchClientes } from '../api/clientesApi'
 import { fetchVentas } from '../api/ventasApi'
 import { fetchPagos } from '../api/pagosApi'
-
-function formatMoney(value) {
-  const number = Number(value || 0)
-  return `$ ${number.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
+import { formatMoney } from '../utils/money'
 
 function normalizeText(value) {
   return String(value || '').trim().toLowerCase()
@@ -131,7 +127,7 @@ export default function CuentaCorrientePage() {
     const saldoMap = new Map()
 
     clientes.forEach((cliente) => {
-      saldoMap.set(String(cliente.id), Number(cliente.saldo_inicial || 0))
+      saldoMap.set(String(cliente.id), Number(cliente.saldo_inicial_pendiente ?? cliente.saldo_inicial ?? 0))
     })
 
     ventas.forEach((venta) => {
