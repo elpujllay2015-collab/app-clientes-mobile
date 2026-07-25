@@ -4,6 +4,7 @@ import { fetchVentas } from '../api/ventasApi'
 import { fetchPagos } from '../api/pagosApi'
 import { hoyISOLocal } from '../utils/fecha'
 import Icon from '../components/Icon'
+import AccountMenu from '../components/AccountMenu'
 import { formatMoney as money } from '../utils/money'
 
 const primaryActions = [
@@ -31,7 +32,6 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
   const [pagos, setPagos] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [menuOpen, setMenuOpen] = useState(false)
 
   const usuarioNombre = currentUser?.username || 'Usuario'
   const empresaNombre = currentUser?.empresa_nombre || ''
@@ -78,7 +78,9 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
     const clientesDestacados = clientes
       .map((cliente) => {
         const ventasCliente = ventas.filter((venta) => venta.cliente_nombre_snapshot === cliente.nombre)
-        const saldo = ventasCliente.reduce((acc, venta) => acc + Number(venta.saldo_pendiente || 0), 0)
+        const saldoVentas = ventasCliente.reduce((acc, venta) => acc + Number(venta.saldo_pendiente || 0), 0)
+        const saldoInicial = Number(cliente.saldo_inicial_pendiente ?? cliente.saldo_inicial ?? 0)
+        const saldo = saldoVentas + saldoInicial
         const tienePagos = ventasCliente.some((venta) => Number(venta.total_pagado || 0) > 0)
         return {
           id: cliente.id,
@@ -122,29 +124,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
               </div>
               <div className="home-brandbar-right">
                 {empresaNombre && <span className="home-brand-negocio">{empresaNombre}</span>}
-                <div className="home-topbar-menu">
-                  <button
-                    className="home-topbar-menu-btn"
-                    type="button"
-                    aria-label="Opciones de tu cuenta"
-                    onClick={() => setMenuOpen((v) => !v)}
-                  >
-                    ☰
-                  </button>
-                  {menuOpen && (
-                    <>
-                      <div className="home-topbar-menu-backdrop" onClick={() => setMenuOpen(false)} />
-                      <div className="home-topbar-menu-pop" role="menu">
-                        <button type="button" role="menuitem" onClick={() => { setMenuOpen(false); onChangePassword() }}>
-                          Cambiar clave
-                        </button>
-                        <button type="button" role="menuitem" className="home-topbar-menu-danger" onClick={() => { setMenuOpen(false); onLogout() }}>
-                          Cerrar sesión
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
+                <AccountMenu onChangePassword={onChangePassword} onLogout={onLogout} />
               </div>
             </div>
             <div className="home-greeting">

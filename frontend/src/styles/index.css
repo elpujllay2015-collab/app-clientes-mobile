@@ -46,6 +46,84 @@ textarea {
   margin-top: 4px;
 }
 
+/* --- Barra superior unificada (pantallas internas, estilo Home) --- */
+.mobile-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05), 0 7px 14px rgba(15, 23, 42, 0.045);
+  position: relative;
+  z-index: 5;
+}
+
+.mobile-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.mobile-topbar-chip {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mobile-topbar-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f2233;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.mobile-topbar-empresa {
+  max-width: 110px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tono por seccion: pinta la banda, el borde inferior y el chip del icono */
+.mobile-topbar-clients { background: #f3f0fd; border-bottom: 1px solid #e6ddfa; }
+.mobile-topbar-clients .mobile-topbar-chip { background: #ede9fe; color: #7c3aed; }
+
+.mobile-topbar-products { background: #edfcf8; border-bottom: 1px solid #cbeee5; }
+.mobile-topbar-products .mobile-topbar-chip { background: #ccfbf1; color: #0d9488; }
+
+.mobile-topbar-account { background: #fff6ea; border-bottom: 1px solid #f6e3c9; }
+.mobile-topbar-account .mobile-topbar-chip { background: #ffedd5; color: #ea580c; }
+
+.mobile-topbar-sale { background: #eefcf3; border-bottom: 1px solid #cdeed7; }
+.mobile-topbar-sale .mobile-topbar-chip { background: #dcfce7; color: #16a34a; }
+
+.mobile-topbar-payment { background: #edf4fe; border-bottom: 1px solid #d9e8fc; }
+.mobile-topbar-payment .mobile-topbar-chip { background: #dbeafe; color: #2563eb; }
+
+.mobile-topbar-results { background: #fff0f2; border-bottom: 1px solid #f8dce1; }
+.mobile-topbar-results .mobile-topbar-chip { background: #ffe4e6; color: #e11d48; }
+
+.mobile-topbar-neutral { background: #eef1f6; border-bottom: 1px solid #dde3ec; }
+.mobile-topbar-neutral .mobile-topbar-chip { background: #e7ebf2; color: #475569; }
+
 .app-content {
   flex: 1;
   padding: 16px;
@@ -339,6 +417,18 @@ textarea {
 
 .home-topbar-menu-pop button + button {
   border-top: 1px solid #eef1f6;
+}
+
+.home-topbar-menu-who {
+  padding: 11px 18px;
+  font-size: 12.5px;
+  color: #6b7280;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.home-topbar-menu-who strong {
+  color: #0f2233;
+  font-weight: 700;
 }
 
 .home-topbar-menu-danger {

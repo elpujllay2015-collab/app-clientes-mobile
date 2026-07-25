@@ -1,3 +1,6 @@
+import Icon from '../components/Icon'
+import AccountMenu from '../components/AccountMenu'
+
 const tabs = [
   { key: 'inicio', label: 'Inicio' },
   { key: 'clientes', label: 'Clientes' },
@@ -8,32 +11,39 @@ const tabs = [
   { key: 'cuenta', label: 'Cuenta' },
 ]
 
-function formatUserName(user) {
-  if (!user) return ''
-  const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim()
-  return fullName || user.username || ''
+// Cada pantalla lleva su icono y su tono (el tono pinta la barra + el chip).
+const sections = {
+  clientes: { icon: 'users', tone: 'clients' },
+  productos: { icon: 'package', tone: 'products' },
+  proveedores: { icon: 'building', tone: 'account' },
+  ventas: { icon: 'receipt', tone: 'sale' },
+  pagos: { icon: 'banknote', tone: 'payment' },
+  resultados: { icon: 'bar', tone: 'results' },
+  cuenta: { icon: 'book', tone: 'account' },
+  password: { icon: 'lock', tone: 'neutral' },
 }
 
 export default function MobileLayout({ title, activeTab, onChangeTab, children, currentUser, onLogout, onChangePassword }) {
   const showHeader = activeTab !== 'inicio'
-  const userName = formatUserName(currentUser)
+  const section = sections[activeTab] || { icon: null, tone: 'neutral' }
+  const empresaNombre = currentUser?.empresa_nombre || ''
+  const usuarioNombre = currentUser?.username || ''
 
   return (
     <div className="app-shell">
       {showHeader && (
-        <header className="app-header">
-          <div>
-            <div className="app-title">{title}</div>
-            <div className="app-subtitle">Cuenta corriente mobile</div>
+        <header className={`mobile-topbar mobile-topbar-${section.tone}`}>
+          <div className="mobile-topbar-left">
+            {section.icon && (
+              <span className="mobile-topbar-chip">
+                <Icon name={section.icon} size={21} />
+              </span>
+            )}
+            <div className="mobile-topbar-title">{title}</div>
           </div>
-          <div className="app-header-actions">
-            {userName ? <div className="app-user-badge">{userName}</div> : null}
-            <button className="app-password-btn" type="button" onClick={onChangePassword}>
-              Clave
-            </button>
-            <button className="app-logout-btn" type="button" onClick={onLogout}>
-              Salir
-            </button>
+          <div className="mobile-topbar-right">
+            {empresaNombre && <span className="mobile-topbar-empresa">{empresaNombre}</span>}
+            <AccountMenu onChangePassword={onChangePassword} onLogout={onLogout} userLabel={usuarioNombre} />
           </div>
         </header>
       )}
