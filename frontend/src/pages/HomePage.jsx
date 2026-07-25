@@ -109,11 +109,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
         <>
           <section className="home-hero-card">
             <div className="home-hero-top-row">
-              <div>
-                <span className="home-hero-kicker">CUENTA CORRIENTE</span>
-                <h1 className="home-hero-title">Ventas y Cobros</h1>
-                <p className="home-hero-text">App simple profesional para celular</p>
-              </div>
+              <span className="home-hero-kicker">CUENTA CORRIENTE</span>
               <div className="home-hero-session">
                 <span className="home-session-user">{currentUser?.first_name || currentUser?.username || 'Usuario'}</span>
                 <div className="home-session-actions">
@@ -126,6 +122,8 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
                 </div>
               </div>
             </div>
+            <h1 className="home-hero-title">Ventas y Cobros</h1>
+            <p className="home-hero-text">{currentUser?.empresa_nombre || 'App de ventas y cobros'}</p>
           </section>
 
           <section className="home-actions-grid">

@@ -218,15 +218,17 @@ textarea {
 }
 
 .home-hero-title {
-  margin: 10px 0 8px;
-  font-size: 28px;
+  margin: 16px 0 6px;
+  font-size: 30px;
   line-height: 1.1;
+  font-weight: 800;
 }
 
 .home-hero-text {
   margin: 0;
   font-size: 15px;
-  opacity: 0.94;
+  font-weight: 700;
+  opacity: 0.9;
 }
 
 .home-actions-grid {
@@ -2117,6 +2119,8 @@ textarea {
   background: rgba(255, 255, 255, 0.14);
   color: #ffffff;
   font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
 }
 
 .home-session-password {
