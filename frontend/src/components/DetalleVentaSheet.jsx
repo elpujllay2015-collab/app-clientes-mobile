@@ -89,7 +89,7 @@ export default function DetalleVentaSheet({ ventaId, onClose }) {
                 <div className="dv-sub">
                   Cliente: {clienteNombre}
                   <br />
-                  {proveedorNombre} · {formatFecha(venta.fecha_compra)} · Factura {venta.numero_factura || '—'}
+                  Proveedor: {proveedorNombre} · {formatFecha(venta.fecha_compra)} · Factura {venta.numero_factura || '—'}
                 </div>
               </div>
               {badge && <span className={`home-badge ${badge.className}`}>{badge.label}</span>}
