@@ -2839,3 +2839,21 @@ textarea {
     animation: none;
   }
 }
+
+/* Botón "Ver detalle" en la tarjeta de venta seleccionada (Pagos) */
+.pagos-pro-detalle-btn {
+  width: 100%;
+  margin-top: 12px;
+  height: 44px;
+  border: 1px solid #d7dee8;
+  border-radius: 12px;
+  background: #f7f9fc;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pagos-pro-detalle-btn:active {
+  background: #eef2f8;
+}

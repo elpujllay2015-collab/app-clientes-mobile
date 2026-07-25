@@ -4,6 +4,7 @@ import { createPago } from '../api/pagosApi'
 import { fetchVentas } from '../api/ventasApi'
 import { hoyISOLocal } from '../utils/fecha'
 import { formatMoney } from '../utils/money'
+import DetalleVentaSheet from '../components/DetalleVentaSheet'
 
 export default function PagosPage({ currentUser }) {
   const [clientes, setClientes] = useState([])
@@ -18,6 +19,7 @@ export default function PagosPage({ currentUser }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [detalleVentaId, setDetalleVentaId] = useState(null)
 
   async function load() {
     setLoading(true)
@@ -171,6 +173,14 @@ export default function PagosPage({ currentUser }) {
                   <strong>{formatMoney(ventaSeleccionada.saldo_pendiente)}</strong>
                 </div>
               </div>
+
+              <button
+                type="button"
+                className="pagos-pro-detalle-btn"
+                onClick={() => setDetalleVentaId(ventaSeleccionada.id)}
+              >
+                Ver detalle de la venta ▾
+              </button>
             </article>
           )}
 
@@ -226,6 +236,10 @@ export default function PagosPage({ currentUser }) {
             </button>
           </article>
         </>
+      )}
+
+      {detalleVentaId && (
+        <DetalleVentaSheet ventaId={detalleVentaId} onClose={() => setDetalleVentaId(null)} />
       )}
     </div>
   )
