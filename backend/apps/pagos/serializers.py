@@ -7,20 +7,21 @@ from apps.ventas.models import Venta
 class PagoCreateSerializer(serializers.Serializer):
     fecha_pago = serializers.DateField()  # <-- LÍNEA INSERTADA
     cliente_id = serializers.IntegerField()  # <-- LÍNEA INSERTADA
-    venta_id = serializers.IntegerField()  # <-- LÍNEA INSERTADA
+    venta_id = serializers.IntegerField(required=False, allow_null=True)  # None = pago a cuenta inicial
     monto = serializers.DecimalField(max_digits=12, decimal_places=2)  # <-- LÍNEA INSERTADA
     forma_pago = serializers.ChoiceField(choices=Pago.FORMA_PAGO_CHOICES)  # <-- LÍNEA INSERTADA
     observaciones = serializers.CharField(required=False, allow_blank=True, default='')  # <-- LÍNEA INSERTADA
 
 
 class PagoListSerializer(serializers.ModelSerializer):
-    venta_estado = serializers.CharField(source='venta.estado', read_only=True)  # <-- LÍNEA INSERTADA
+    venta_estado = serializers.CharField(source='venta.estado', read_only=True, allow_null=True)
     venta_saldo_pendiente = serializers.DecimalField(
         source='venta.saldo_pendiente',
         max_digits=12,
         decimal_places=2,
         read_only=True,
-    )  # <-- LÍNEA INSERTADA
+        allow_null=True,
+    )
 
     class Meta:
         model = Pago
@@ -72,4 +73,6 @@ class PagoCreateResponseSerializer(serializers.ModelSerializer):
         )
 
     def get_venta_actualizada(self, obj):
-        return PagoVentaActualizadaSerializer(obj.venta).data  # <-- LÍNEA INSERTADA
+        if obj.venta is None:
+            return None
+        return PagoVentaActualizadaSerializer(obj.venta).data

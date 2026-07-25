@@ -51,18 +51,22 @@ export default function PagosPage() {
 
   const ventaSeleccionada = useMemo(() => ventasCliente.find((venta) => String(venta.id) === String(ventaId)), [ventasCliente, ventaId])
 
+  const clienteSeleccionado = useMemo(() => clientes.find((c) => String(c.id) === String(clienteId)), [clientes, clienteId])
+  const saldoInicialPendiente = Number(clienteSeleccionado?.saldo_inicial_pendiente || 0)
+  const esCuentaInicial = ventaId === 'INICIAL'
+
   async function handleSubmit() {
     setError('')
     setSuccess('')
     if (!clienteId) { setError('Tenés que seleccionar un cliente'); return }
-    if (!ventaId) { setError('Tenés que seleccionar una venta'); return }
+    if (!ventaId) { setError('Tenés que seleccionar el destino (una venta o la cuenta inicial)'); return }
     if (!monto) { setError('Tenés que ingresar un monto'); return }
     setSaving(true)
     try {
       const response = await createPago({
         fecha_pago: hoyISOLocal(),
         cliente_id: Number(clienteId),
-        venta_id: Number(ventaId),
+        venta_id: ventaId === 'INICIAL' ? null : Number(ventaId),
         monto,
         forma_pago: formaPago,
         observaciones,
@@ -93,7 +97,7 @@ export default function PagosPage() {
               <div>
                 <span className="pagos-pro-kicker">Cobros</span>
                 <strong className="pagos-pro-title">Registrar pago</strong>
-                <span className="pagos-pro-subtitle">Elegí cliente, seleccioná la venta pendiente y cargá el pago.</span>
+                <span className="pagos-pro-subtitle">Elegí cliente, seleccioná la venta o la cuenta inicial y cargá el pago.</span>
               </div>
             </div>
 
@@ -111,9 +115,12 @@ export default function PagosPage() {
               </div>
 
               <div className="pagos-pro-field">
-                <span className="pagos-pro-field-label">Venta pendiente</span>
+                <span className="pagos-pro-field-label">Destino del pago</span>
                 <select className="input pagos-pro-input" value={ventaId} onChange={(e) => setVentaId(e.target.value)}>
-                  <option value="">Seleccionar venta</option>
+                  <option value="">Seleccionar destino</option>
+                  {saldoInicialPendiente > 0 && (
+                    <option value="INICIAL">Cuenta inicial · Saldo {formatMoney(saldoInicialPendiente)}</option>
+                  )}
                   {ventasCliente.map((venta) => (
                     <option key={venta.id} value={venta.id}>
                       Venta #{venta.id} · Saldo {formatMoney(venta.saldo_pendiente)}
@@ -146,6 +153,25 @@ export default function PagosPage() {
                 <div className="pagos-pro-summary-box pagos-pro-summary-box-highlight">
                   <span className="pagos-pro-mini-label">Saldo pendiente</span>
                   <strong>{formatMoney(ventaSeleccionada.saldo_pendiente)}</strong>
+                </div>
+              </div>
+            </article>
+          )}
+
+          {esCuentaInicial && (
+            <article className="summary-card pagos-pro-summary-card">
+              <div className="pagos-pro-summary-header">
+                <div>
+                  <span className="summary-label pagos-pro-summary-label">Destino seleccionado</span>
+                  <strong className="pagos-pro-summary-title">Cuenta inicial</strong>
+                </div>
+                <span className="pagos-pro-badge">Saldo anterior</span>
+              </div>
+
+              <div className="pagos-pro-summary-grid">
+                <div className="pagos-pro-summary-box pagos-pro-summary-box-highlight">
+                  <span className="pagos-pro-mini-label">Saldo inicial pendiente</span>
+                  <strong>{formatMoney(saldoInicialPendiente)}</strong>
                 </div>
               </div>
             </article>

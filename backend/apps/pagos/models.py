@@ -19,7 +19,8 @@ class Pago(TimeStampedModel):
     fecha_pago = models.DateField()  # <-- LÍNEA INSERTADA
 
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, related_name='pagos')  # <-- LÍNEA INSERTADA
-    venta = models.ForeignKey(Venta, on_delete=models.PROTECT, related_name='pagos')  # <-- LÍNEA INSERTADA
+    # venta puede ser NULL cuando el pago es a cuenta inicial (saldo anterior del cliente).
+    venta = models.ForeignKey(Venta, on_delete=models.PROTECT, related_name='pagos', null=True, blank=True)
 
     monto = models.DecimalField(max_digits=12, decimal_places=2)  # <-- LÍNEA INSERTADA
     forma_pago = models.CharField(max_length=20, choices=FORMA_PAGO_CHOICES)  # <-- LÍNEA INSERTADA

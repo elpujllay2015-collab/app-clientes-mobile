@@ -158,7 +158,7 @@ export default function CuentaCorrientePage() {
     const debtMap = new Map()
 
     clientes.forEach((cliente) => {
-      const saldoInicial = Number(cliente.saldo_inicial || 0)
+      const saldoInicial = Number(cliente.saldo_inicial_pendiente ?? cliente.saldo_inicial ?? 0)
       debtMap.set(String(cliente.id), {
         hasDebt: saldoInicial > 0,
         hasSaldoInicialDebt: saldoInicial > 0,
@@ -255,7 +255,7 @@ export default function CuentaCorrientePage() {
     const totalVendido = ventasCliente.reduce((acc, venta) => acc + Number(venta.total_venta || 0), 0)
     const totalPagado = ventasCliente.reduce((acc, venta) => acc + Number(venta.total_pagado || 0), 0)
     const saldoVentas = ventasCliente.reduce((acc, venta) => acc + Number(venta.saldo_pendiente || 0), 0)
-    const saldoInicial = Number(clienteSeleccionado?.saldo_inicial || 0)
+    const saldoInicial = Number(clienteSeleccionado?.saldo_inicial_pendiente ?? clienteSeleccionado?.saldo_inicial ?? 0)
     const saldoPendiente = saldoInicial + saldoVentas
     return { totalVendido, totalPagado, saldoInicial, saldoPendiente }
   }, [ventasCliente, clienteSeleccionado])
@@ -624,7 +624,7 @@ export default function CuentaCorrientePage() {
           <span>Fecha: {pago.fecha_pago}</span>
           <span>Monto: {formatMoney(pago.monto)}</span>
           <span>Método: {pago.forma_pago}</span>
-          <span>Venta: #{pago.venta}</span>
+          <span>{pago.venta ? `Venta: #${pago.venta}` : 'Destino: Cuenta inicial'}</span>
           <span>Observaciones: {pago.observaciones || '-'}</span>
         </article>
       ))}

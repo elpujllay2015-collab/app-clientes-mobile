@@ -1,6 +1,7 @@
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.db import transaction
+from django.db.models import Sum
 
 from apps.clientes.models import Cliente
 from apps.pagos.models import Pago
@@ -8,6 +9,13 @@ from apps.ventas.models import Venta
 
 
 DECIMAL_2 = Decimal("0.01")
+
+
+def saldo_inicial_pendiente(cliente):
+    """Saldo inicial del cliente menos lo ya cobrado a cuenta inicial (pagos sin venta)."""
+    pagado = cliente.pagos.filter(activo=True, venta__isnull=True).aggregate(s=Sum("monto"))["s"] or Decimal("0")
+    pendiente = (Decimal(str(cliente.saldo_inicial)) - Decimal(str(pagado))).quantize(DECIMAL_2, rounding=ROUND_HALF_UP)
+    return pendiente if pendiente > 0 else Decimal("0.00")
 
 
 def _to_decimal(value):
@@ -69,3 +77,32 @@ def registrar_pago_venta(*, empresa, fecha_pago, cliente_id, venta_id, monto, fo
 
     venta = _recalcular_totales_venta(venta)
     return pago, venta
+
+
+@transaction.atomic
+def registrar_pago_cuenta_inicial(*, empresa, fecha_pago, cliente_id, monto, forma_pago, observaciones=""):
+    """Registra un pago que baja el saldo inicial (deuda anterior) del cliente, sin venta asociada."""
+    cliente = Cliente.objects.select_for_update().get(id=cliente_id, activo=True, empresa=empresa)
+
+    monto = _to_decimal(monto)
+    if monto <= 0:
+        raise ValueError("El monto del pago debe ser mayor a 0.")
+
+    pendiente = saldo_inicial_pendiente(cliente)
+    if pendiente <= 0:
+        raise ValueError("Este cliente no tiene saldo inicial pendiente para cobrar.")
+    if monto > pendiente:
+        raise ValueError("El monto no puede superar el saldo inicial pendiente.")
+
+    pago = Pago.objects.create(
+        empresa=empresa,
+        fecha_pago=fecha_pago,
+        cliente=cliente,
+        venta=None,
+        monto=monto,
+        forma_pago=forma_pago,
+        observaciones=observaciones or "",
+        activo=True,
+    )
+
+    return pago
