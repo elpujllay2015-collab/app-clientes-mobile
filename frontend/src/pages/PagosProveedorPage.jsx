@@ -6,7 +6,7 @@ import { createPagoProveedor, fetchPagosProveedor } from '../api/pagosProveedorA
 import { hoyISOLocal } from '../utils/fecha'
 import { formatMoney } from '../utils/money'
 
-export default function PagosProveedorPage({ onNavigate }) {
+export default function PagosProveedorPage({ onNavigate, currentUser }) {
   const [proveedores, setProveedores] = useState([])
   const [ventas, setVentas] = useState([])
   const [pagos, setPagos] = useState([])
@@ -19,6 +19,8 @@ export default function PagosProveedorPage({ onNavigate }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+
+  const empresaNombre = currentUser?.empresa_nombre || 'mi negocio'
 
   async function load() {
     setLoading(true)
@@ -150,7 +152,7 @@ export default function PagosProveedorPage({ onNavigate }) {
               boxShadow: '0 12px 28px rgba(15, 23, 42, 0.06)',
             }}
           >
-            <span style={{ fontSize: '12px', color: '#5b7083' }}>Mi caja</span>
+            <span style={{ fontSize: '12px', color: '#5b7083' }}>Caja {empresaNombre}</span>
             <strong style={{ display: 'block', fontSize: '28px', color: miCaja >= 0 ? '#027a48' : '#b42318', marginTop: '4px' }}>
               {formatMoney(miCaja)}
             </strong>

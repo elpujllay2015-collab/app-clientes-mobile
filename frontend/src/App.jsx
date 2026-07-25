@@ -184,13 +184,13 @@ export default function App() {
       case 'productos':
         return <ProductosPage />
       case 'proveedores':
-        return <ProveedoresPage onNavigate={setTab} />
+        return <ProveedoresPage onNavigate={setTab} currentUser={currentUser} />
       case 'pagosProveedor':
-        return <PagosProveedorPage onNavigate={setTab} />
+        return <PagosProveedorPage onNavigate={setTab} currentUser={currentUser} />
       case 'ventas':
         return <NuevaVentaPage />
       case 'pagos':
-        return <PagosPage />
+        return <PagosPage currentUser={currentUser} />
       case 'resultados':
         return <ResultadosPage />
       case 'cuenta':

@@ -5,7 +5,7 @@ import { fetchVentas } from '../api/ventasApi'
 import { hoyISOLocal } from '../utils/fecha'
 import { formatMoney } from '../utils/money'
 
-export default function PagosPage() {
+export default function PagosPage({ currentUser }) {
   const [clientes, setClientes] = useState([])
   const [ventas, setVentas] = useState([])
   const [clienteId, setClienteId] = useState('')
@@ -51,6 +51,7 @@ export default function PagosPage() {
   const clienteSeleccionado = useMemo(() => clientes.find((c) => String(c.id) === String(clienteId)), [clientes, clienteId])
   const saldoInicialPendiente = Number(clienteSeleccionado?.saldo_inicial_pendiente || 0)
   const esCuentaInicial = ventaId === 'INICIAL'
+  const empresaNombre = currentUser?.empresa_nombre || 'mi negocio'
 
   async function handleSubmit() {
     setError('')
@@ -137,9 +138,9 @@ export default function PagosPage() {
                   value={directoProveedor ? 'PROVEEDOR' : 'LEO'}
                   onChange={(e) => setDirectoProveedor(e.target.value === 'PROVEEDOR')}
                 >
-                  <option value="LEO">Me pagó a mí</option>
+                  <option value="LEO">Pago a {empresaNombre}</option>
                   <option value="PROVEEDOR">
-                    Le pagó directo{ventaSeleccionada.proveedor_nombre ? ` a ${ventaSeleccionada.proveedor_nombre}` : ' al proveedor'}
+                    Pago a {ventaSeleccionada.proveedor_nombre || 'el proveedor'}
                   </option>
                 </select>
               </div>

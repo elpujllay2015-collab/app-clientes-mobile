@@ -14,7 +14,7 @@ function normalizeSaldoInput(value) {
   return String(value ?? '').replace('.', ',')
 }
 
-export default function ProveedoresPage({ onNavigate }) {
+export default function ProveedoresPage({ onNavigate, currentUser }) {
   const [proveedores, setProveedores] = useState([])
   const [ventas, setVentas] = useState([])
   const [pagosProveedor, setPagosProveedor] = useState([])
@@ -26,6 +26,7 @@ export default function ProveedoresPage({ onNavigate }) {
   const [success, setSuccess] = useState('')
   const [query, setQuery] = useState('')
   const [form, setForm] = useState(emptyForm)
+  const empresaNombre = currentUser?.empresa_nombre || 'mi negocio'
 
   async function loadProveedores() {
     setLoading(true)
@@ -181,7 +182,7 @@ export default function ProveedoresPage({ onNavigate }) {
           onClick={() => onNavigate('pagosProveedor')}
           style={{ borderRadius: '14px', padding: '14px 16px', border: '1px solid #c9d6e3', background: '#f7fafc', fontWeight: 700, color: '#133b5c', textAlign: 'left' }}
         >
-          Pagos a proveedor / Mi caja →
+          Pagos a proveedor / Caja {empresaNombre} →
         </button>
       )}
 
