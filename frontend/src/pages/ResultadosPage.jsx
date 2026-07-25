@@ -167,7 +167,7 @@ export default function ResultadosPage() {
                     <span className={`resultados-proveedor-kpi resultados-proveedor-kpi-${proveedor.kpi_estado}`}>
                       {proveedor.kpi_estado === 'rentable' ? 'Rentable' : proveedor.kpi_estado === 'bajo_margen' ? 'Bajo margen' : 'Pérdida'}
                     </span>
-                    <span className="resultados-proveedor-badge">Debe {formatMoney(proveedor.saldo_pendiente)}</span>
+                    <span className="resultados-proveedor-badge">Por cobrar {formatMoney(proveedor.saldo_pendiente)}</span>
                   </div>
                 </div>
 
