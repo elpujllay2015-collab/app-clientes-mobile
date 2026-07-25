@@ -296,20 +296,20 @@ export default function NuevaVentaPage() {
                     </div>
 
                     <div className="ventas-pro-field">
-                      <span className="ventas-pro-field-label">Costo unitario</span>
+                      <span className="ventas-pro-field-label">Precio de Costo</span>
                       <input
                         className="input ventas-pro-input"
-                        placeholder="Costo unitario"
+                        placeholder="Precio de Costo"
                         value={item.costo_unitario}
                         onChange={(e) => updateItem(index, 'costo_unitario', e.target.value)}
                       />
                     </div>
 
                     <div className="ventas-pro-field">
-                      <span className="ventas-pro-field-label">Precio unitario</span>
+                      <span className="ventas-pro-field-label">Precio de Venta</span>
                       <input
                         className="input ventas-pro-input"
-                        placeholder="Precio unitario"
+                        placeholder="Precio de Venta"
                         value={item.precio_unitario}
                         onChange={(e) => updateItem(index, 'precio_unitario', e.target.value)}
                       />
