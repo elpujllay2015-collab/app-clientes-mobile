@@ -89,6 +89,11 @@ class VentaCreateSerializer(serializers.Serializer):
 
 
 class VentaListSerializer(serializers.ModelSerializer):
+    proveedor_nombre = serializers.SerializerMethodField()
+
+    def get_proveedor_nombre(self, obj):
+        return obj.proveedor.nombre if obj.proveedor else ''
+
     class Meta:
         model = Venta
         fields = (
@@ -96,6 +101,7 @@ class VentaListSerializer(serializers.ModelSerializer):
             'fecha_compra',
             'cliente',
             'proveedor',
+            'proveedor_nombre',
             'cliente_nombre_snapshot',
             'numero_factura',
             'cuit_snapshot',

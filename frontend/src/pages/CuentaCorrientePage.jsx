@@ -567,6 +567,7 @@ export default function CuentaCorrientePage() {
           }}
         >
           <strong style={{ fontSize: '18px', color: '#0f2233' }}>Venta #{venta.id}</strong>
+          <span>Proveedor: {venta.proveedor_nombre || '-'}</span>
           <span>Fecha: {venta.fecha_compra}</span>
           <span>Factura: {venta.numero_factura || '-'}</span>
           <span>Total venta: {formatMoney(venta.total_venta)}</span>
