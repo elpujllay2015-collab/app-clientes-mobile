@@ -3,18 +3,19 @@ import { fetchClientes } from '../api/clientesApi'
 import { fetchVentas } from '../api/ventasApi'
 import { fetchPagos } from '../api/pagosApi'
 import { hoyISOLocal } from '../utils/fecha'
+import Icon from '../components/Icon'
 
 const primaryActions = [
-  { key: 'ventas', title: 'Nueva venta', subtitle: 'Registrar venta', icon: '🧾', tone: 'sale' },
-  { key: 'pagos', title: 'Registrar pago', subtitle: 'Aplicar cobro', icon: '💵', tone: 'payment' },
-  { key: 'clientes', title: 'Clientes', subtitle: 'Altas y saldos', icon: '👥', tone: 'clients' },
-  { key: 'cuenta', title: 'Cta Cte', subtitle: 'Ver cuenta', icon: '📒', tone: 'account' },
+  { key: 'ventas', title: 'Nueva venta', subtitle: 'Registrar venta', icon: 'receipt', tone: 'sale' },
+  { key: 'pagos', title: 'Registrar pago', subtitle: 'Aplicar cobro', icon: 'banknote', tone: 'payment' },
+  { key: 'clientes', title: 'Clientes', subtitle: 'Altas y saldos', icon: 'users', tone: 'clients' },
+  { key: 'cuenta', title: 'Cta Cte', subtitle: 'Ver cuenta', icon: 'book', tone: 'account' },
 ]
 
 const secondaryActions = [
-  { key: 'productos', title: 'Productos', subtitle: 'Altas y precios', icon: '📦', tone: 'products' },
-  { key: 'proveedores', title: 'Proveedores', subtitle: 'Gestión', icon: '🏢', tone: 'account' },
-  { key: 'resultados', title: 'Resultados', subtitle: 'Res. Vta', icon: '📊', tone: 'results' },
+  { key: 'productos', title: 'Productos', subtitle: 'Altas y precios', icon: 'package', tone: 'products' },
+  { key: 'proveedores', title: 'Proveedores', subtitle: 'Gestión', icon: 'building', tone: 'account' },
+  { key: 'resultados', title: 'Resultados', subtitle: 'Res. Vta', icon: 'bar', tone: 'results' },
 ]
 
 function money(value) {
@@ -162,7 +163,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
                 onClick={() => onNavigate(action.key)}
               >
                 <span className={`home-action-icon-wrap home-action-icon-wrap-${action.tone}`}>
-                  <span className="home-action-icon" aria-hidden="true">{action.icon}</span>
+                  <Icon name={action.icon} className="home-action-icon" />
                 </span>
                 <span className="home-action-title">{action.title}</span>
                 <span className="home-action-subtitle">{action.subtitle}</span>
@@ -179,7 +180,7 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
                 onClick={() => onNavigate(action.key)}
               >
                 <span className={`home-action-icon-wrap home-action-icon-wrap-${action.tone}`}>
-                  <span className="home-action-icon" aria-hidden="true">{action.icon}</span>
+                  <Icon name={action.icon} className="home-action-icon" />
                 </span>
                 <span className="home-action-title">{action.title}</span>
                 <span className="home-action-subtitle">{action.subtitle}</span>
