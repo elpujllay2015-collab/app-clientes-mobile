@@ -33,6 +33,10 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
   const [pagos, setPagos] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  const negocio = currentUser?.empresa_nombre || currentUser?.first_name || currentUser?.username || 'Usuario'
+  const avatarInicial = (negocio.trim().charAt(0) || 'U').toUpperCase()
 
   useEffect(() => {
     let active = true
@@ -107,24 +111,38 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
 
       {!loading && (
         <>
-          <section className="home-hero-card">
-            <div className="home-hero-top-row">
-              <span className="home-hero-kicker">CUENTA CORRIENTE</span>
-              <div className="home-hero-session">
-                <span className="home-session-user">{currentUser?.first_name || currentUser?.username || 'Usuario'}</span>
-                <div className="home-session-actions">
-                  <button className="home-session-password" type="button" onClick={onChangePassword}>
-                    Cambiar clave
-                  </button>
-                  <button className="home-session-logout" type="button" onClick={onLogout}>
-                    Salir
-                  </button>
-                </div>
+          <header className="home-topbar">
+            <div className="home-topbar-identity">
+              <span className="home-topbar-avatar" aria-hidden="true">{avatarInicial}</span>
+              <div className="home-topbar-greeting">
+                <span className="home-topbar-hello">Hola, {negocio}</span>
+                <span className="home-topbar-app">Nerca Poquet · Ventas y cobros</span>
               </div>
             </div>
-            <h1 className="home-hero-title">Ventas y Cobros</h1>
-            <p className="home-hero-text">{currentUser?.empresa_nombre || 'App de ventas y cobros'}</p>
-          </section>
+            <div className="home-topbar-menu">
+              <button
+                className="home-topbar-menu-btn"
+                type="button"
+                aria-label="Opciones de tu cuenta"
+                onClick={() => setMenuOpen((v) => !v)}
+              >
+                ☰
+              </button>
+              {menuOpen && (
+                <>
+                  <div className="home-topbar-menu-backdrop" onClick={() => setMenuOpen(false)} />
+                  <div className="home-topbar-menu-pop" role="menu">
+                    <button type="button" role="menuitem" onClick={() => { setMenuOpen(false); onChangePassword() }}>
+                      Cambiar clave
+                    </button>
+                    <button type="button" role="menuitem" className="home-topbar-menu-danger" onClick={() => { setMenuOpen(false); onLogout() }}>
+                      Cerrar sesión
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </header>
 
           <section className="home-actions-grid">
             {primaryActions.map((action) => (
