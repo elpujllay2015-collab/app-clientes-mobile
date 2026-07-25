@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f3efe7" />
+  <title>Instalar Nerca Poquet</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Nerca Poquet" />
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #f3efe7;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1f2937;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px calc(32px + env(safe-area-inset-bottom, 0px));
+    }
+    .wrap { width: 100%; max-width: 460px; }
+
+    .hero { text-align: center; }
+    .app-icon {
+      width: 104px; height: 104px; border-radius: 24px;
+      box-shadow: 0 14px 30px rgba(138, 31, 36, .28);
+      object-fit: cover; background: #8a1f24;
+    }
+    h1 { font-size: 30px; font-weight: 800; margin: 16px 0 2px; color: #2a1113; letter-spacing: -.5px; }
+    .tagline { margin: 0; color: #8a1f24; font-weight: 700; font-size: 15px; }
+    .lead { margin: 14px 0 0; color: #5b5250; font-size: 15.5px; }
+
+    .cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; margin: 22px 0 0; padding: 18px 20px;
+      border: none; border-radius: 16px;
+      background: #ea580c; color: #fff;
+      font-size: 18px; font-weight: 800; font-family: inherit;
+      box-shadow: 0 12px 26px rgba(234, 88, 12, .34);
+      cursor: pointer; transition: transform .06s ease, filter .15s ease;
+    }
+    .cta:active { transform: scale(.985); }
+    .cta:disabled { filter: none; cursor: default; }
+
+    .warn {
+      display: none; margin: 16px 0 0; padding: 14px 16px;
+      background: #fff7ed; border: 1px solid #fdba74;
+      border-radius: 14px; color: #9a3412; font-size: 14.5px; line-height: 1.5;
+    }
+    .warn b { color: #7c2d12; }
+
+    .tabs { display: flex; gap: 10px; margin: 22px 0 0; }
+    .tab {
+      flex: 1; padding: 14px 10px; border-radius: 14px;
+      border: 1px solid #e2d9d4; background: #fff;
+      font-size: 15px; font-weight: 700; font-family: inherit; color: #5b5250;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      cursor: pointer;
+    }
+    .tab .ic { width: 18px; height: 18px; display: inline-block; }
+    .tab.active { border-color: #ea580c; background: #fff3ec; color: #b23c08; }
+
+    .steps { display: none; margin: 14px 0 0; padding: 18px; background: #fff; border: 1px solid #e2d9d4; border-radius: 16px; box-shadow: 0 10px 24px rgba(15, 23, 42, .05); }
+    .steps.active { display: block; }
+    .steps h2 { margin: 0 0 12px; font-size: 16.5px; font-weight: 800; color: #2a1113; }
+    .steps ol { margin: 0; padding-left: 20px; }
+    .steps li { margin: 0 0 12px; line-height: 1.55; font-size: 15.5px; color: #3f3a38; }
+    .steps li:last-child { margin-bottom: 0; }
+    .steps b { color: #1f2937; }
+    .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; background: #f1ece8; font-weight: 800; font-size: 14px; }
+
+    .already { text-align: center; margin: 22px 0 0; font-size: 13.5px; color: #8b817d; line-height: 1.5; }
+    .already a { color: #8a1f24; font-weight: 700; text-decoration: none; }
+
+    .installed-note { display: none; margin: 20px 0 0; padding: 16px; text-align: center; background: #ecfdf3; border: 1px solid #a6e9c3; border-radius: 14px; color: #027a48; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <img class="app-icon" src="/icons/icon-512.png" alt="Nerca Poquet" />
+      <h1>Nerca Poquet</h1>
+      <p class="tagline">Ventas y cuenta corriente</p>
+      <p class="lead">Instalá la app en tu celular. Rápido y fácil.</p>
+    </div>
+
+    <button id="cta" class="cta" type="button">
+      <span style="font-size:22px;line-height:0">＋</span> Instalar app
+    </button>
+
+    <div id="warnIOS" class="warn">
+      📱 En iPhone tenés que abrir esta página en <b>Safari</b>.
+      Si la abriste desde WhatsApp u otra app, tocá el menú (los tres puntos <b>···</b>)
+      y elegí <b>“Abrir en Safari”</b>.
+    </div>
+
+    <div id="installedNote" class="installed-note">✅ La app ya está instalada. Abrila desde el ícono en tu celular.</div>
+
+    <div class="tabs">
+      <button class="tab" data-tab="android" type="button">
+        <svg class="ic" viewBox="0 0 24 24" fill="#3ddc84"><path d="M6 18a1 1 0 0 0 1 1h1v3a1.5 1.5 0 0 0 3 0v-3h2v3a1.5 1.5 0 0 0 3 0v-3h1a1 1 0 0 0 1-1V9H6v9Zm-2.5-9A1.5 1.5 0 0 0 2 10.5v5a1.5 1.5 0 0 0 3 0v-5A1.5 1.5 0 0 0 3.5 9Zm17 0A1.5 1.5 0 0 0 19 10.5v5a1.5 1.5 0 0 0 3 0v-5A1.5 1.5 0 0 0 20.5 9ZM15.6 3.2l1.1-1.1a.4.4 0 0 0-.6-.6l-1.2 1.3a5.9 5.9 0 0 0-5.8 0L7.9 1.5a.4.4 0 1 0-.6.6l1.1 1.1A5.5 5.5 0 0 0 6 8h12a5.5 5.5 0 0 0-2.4-4.8ZM9.5 6a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"/></svg>
+        Android
+      </button>
+      <button class="tab" data-tab="iphone" type="button">
+        <svg class="ic" viewBox="0 0 24 24" fill="#111"><path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.9-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.24 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.02 2.28-1.27 3.14-2.53.99-1.45 1.4-2.85 1.42-2.93-.03-.01-2.72-1.04-2.75-4.13ZM14.47 4.44c.71-.87 1.19-2.08 1.06-3.28-1.02.04-2.26.68-3 1.55-.66.76-1.24 1.99-1.09 3.16 1.14.09 2.31-.58 3.03-1.43Z"/></svg>
+        iPhone
+      </button>
+    </div>
+
+    <div id="steps-android" class="steps">
+      <h2>En Android (Chrome)</h2>
+      <ol>
+        <li>Tocá el botón naranja <b>“Instalar app”</b> y confirmá.</li>
+        <li>Si no te aparece: abrí el menú <span class="pill">⋮</span> (arriba a la derecha) y elegí <b>“Instalar app”</b> (no “Agregar a pantalla principal”).</li>
+        <li>Te queda el ícono en el celular. Abrila desde ahí y listo. ✅</li>
+      </ol>
+    </div>
+
+    <div id="steps-iphone" class="steps">
+      <h2>En iPhone (Safari)</h2>
+      <ol>
+        <li>Abrí esta página en <b>Safari</b> (el navegador de Apple). <i>Si la abriste desde WhatsApp, tocá <b>···</b> → “Abrir en Safari”.</i></li>
+        <li>Tocá el botón <b>Compartir</b> — el cuadradito con la flecha hacia arriba <b>⬆︎</b> (abajo, en el centro).</li>
+        <li>Deslizá para abajo y tocá <b>“Agregar a inicio”</b>.</li>
+        <li>Arriba a la derecha, tocá <b>“Agregar”</b>.</li>
+        <li>Te queda el ícono en la pantalla. Abrila desde ahí y listo. ✅</li>
+      </ol>
+    </div>
+
+    <p class="already">¿Ya la tenés? <a href="/">Abrir la app</a></p>
+  </div>
+
+  <script>
+    (function () {
+      var ua = navigator.userAgent || '';
+      var isIOS = /iphone|ipad|ipod/i.test(ua) && !window.MSStream;
+      var isAndroid = /android/i.test(ua);
+      var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      // navegador embebido (WhatsApp / Instagram / Facebook) donde "Agregar a inicio" no funciona bien en iOS
+      var inApp = /(FBAN|FBAV|Instagram|Line|WhatsApp)/i.test(ua);
+
+      // Si se abrió ya instalada (icono del celular), llevamos directo a la app.
+      if (isStandalone) { window.location.replace('/'); return; }
+
+      var cta = document.getElementById('cta');
+      var warnIOS = document.getElementById('warnIOS');
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+
+      function selectTab(name) {
+        tabs.forEach(function (t) { t.classList.toggle('active', t.dataset.tab === name); });
+        document.getElementById('steps-android').classList.toggle('active', name === 'android');
+        document.getElementById('steps-iphone').classList.toggle('active', name === 'iphone');
+      }
+      tabs.forEach(function (t) { t.addEventListener('click', function () { selectTab(t.dataset.tab); }); });
+
+      // Pestaña por defecto segun el celular
+      selectTab(isIOS ? 'iphone' : 'android');
+
+      if (isIOS) {
+        warnIOS.style.display = 'block';
+        // En iPhone el boton no instala solo: lleva a los pasos.
+        cta.addEventListener('click', function () {
+          selectTab('iphone');
+          document.getElementById('steps-iphone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      }
+
+      // Android / Chrome: prompt nativo de instalacion
+      var deferred = null;
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        deferred = e;
+      });
+
+      window.addEventListener('appinstalled', function () {
+        deferred = null;
+        document.getElementById('installedNote').style.display = 'block';
+      });
+
+      if (!isIOS) {
+        cta.addEventListener('click', async function () {
+          if (deferred) {
+            deferred.prompt();
+            try { await deferred.userChoice; } catch (e) {}
+            deferred = null;
+          } else {
+            // El prompt no esta disponible: guiamos al menu de Chrome.
+            selectTab('android');
+            document.getElementById('steps-android').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
