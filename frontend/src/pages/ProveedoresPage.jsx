@@ -181,7 +181,7 @@ export default function ProveedoresPage({ onNavigate }) {
           onClick={() => onNavigate('pagosProveedor')}
           style={{ borderRadius: '14px', padding: '14px 16px', border: '1px solid #c9d6e3', background: '#f7fafc', fontWeight: 700, color: '#133b5c', textAlign: 'left' }}
         >
-          Pagos a proveedor / Caja de Leo →
+          Pagos a proveedor / Mi caja →
         </button>
       )}
 

@@ -75,9 +75,9 @@ export default function PagosProveedorPage({ onNavigate }) {
     return map
   }, [proveedores, ventas, pagosProveedor, pagos])
 
-  // Caja de Leo = lo que cobró a clientes (que le pagaron A EL) - lo que pagó a proveedores.
+  // Mi caja = lo que me pagaron los clientes (a mí) - lo que le pagué a los proveedores.
   // Los pagos de clientes "directo al proveedor" NO pasan por la caja.
-  const cajaLeo = useMemo(() => {
+  const miCaja = useMemo(() => {
     const cobrado = pagos.reduce((acc, pago) => acc + (pago.activo === false || pago.directo_a_proveedor ? 0 : Number(pago.monto || 0)), 0)
     const pagado = pagosProveedor.reduce((acc, pago) => acc + (pago.activo === false ? 0 : Number(pago.monto || 0)), 0)
     return cobrado - pagado
@@ -150,9 +150,9 @@ export default function PagosProveedorPage({ onNavigate }) {
               boxShadow: '0 12px 28px rgba(15, 23, 42, 0.06)',
             }}
           >
-            <span style={{ fontSize: '12px', color: '#5b7083' }}>Caja de Leo</span>
-            <strong style={{ display: 'block', fontSize: '28px', color: cajaLeo >= 0 ? '#027a48' : '#b42318', marginTop: '4px' }}>
-              {formatMoney(cajaLeo)}
+            <span style={{ fontSize: '12px', color: '#5b7083' }}>Mi caja</span>
+            <strong style={{ display: 'block', fontSize: '28px', color: miCaja >= 0 ? '#027a48' : '#b42318', marginTop: '4px' }}>
+              {formatMoney(miCaja)}
             </strong>
             <span style={{ fontSize: '12px', color: '#5b7083' }}>Cobrado a clientes − pagado a proveedores</span>
           </article>

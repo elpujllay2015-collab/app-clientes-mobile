@@ -137,7 +137,7 @@ export default function PagosPage() {
                   value={directoProveedor ? 'PROVEEDOR' : 'LEO'}
                   onChange={(e) => setDirectoProveedor(e.target.value === 'PROVEEDOR')}
                 >
-                  <option value="LEO">Me pagó a mí (Leo)</option>
+                  <option value="LEO">Me pagó a mí</option>
                   <option value="PROVEEDOR">
                     Le pagó directo{ventaSeleccionada.proveedor_nombre ? ` a ${ventaSeleccionada.proveedor_nombre}` : ' al proveedor'}
                   </option>
