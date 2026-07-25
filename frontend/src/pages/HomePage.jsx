@@ -116,7 +116,6 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
                 <img className="home-brand-logo" src="/logo-full.png" alt="Nerca Poquet" />
               </div>
               <div className="home-brandbar-right">
-                <span className="home-brand-negocio">{negocio}</span>
                 <div className="home-topbar-menu">
                   <button
                     className="home-topbar-menu-btn"
