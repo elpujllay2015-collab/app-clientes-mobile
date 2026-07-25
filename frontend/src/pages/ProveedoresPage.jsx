@@ -26,6 +26,7 @@ export default function ProveedoresPage({ onNavigate, currentUser }) {
   const [success, setSuccess] = useState('')
   const [query, setQuery] = useState('')
   const [form, setForm] = useState(emptyForm)
+  const [detalleId, setDetalleId] = useState(null)
   const empresaNombre = currentUser?.empresa_nombre || 'mi negocio'
 
   async function loadProveedores() {
@@ -84,6 +85,45 @@ export default function ProveedoresPage({ onNavigate, currentUser }) {
     return map
   }, [proveedores, ventas, pagosProveedor, pagos])
 
+  // Detalle (cuenta corriente) del proveedor seleccionado con "Ver cuenta".
+  const detalle = useMemo(() => {
+    if (detalleId == null) return null
+    const key = String(detalleId)
+    const proveedor = proveedores.find((p) => String(p.id) === key)
+    if (!proveedor) return null
+
+    const proveedorDeVenta = new Map()
+    ventas.forEach((v) => proveedorDeVenta.set(String(v.id), v.proveedor != null ? String(v.proveedor) : ''))
+
+    const ventasProveedor = ventas.filter((v) => v.activa !== false && String(v.proveedor) === key)
+    const totalCostos = ventasProveedor.reduce((acc, v) => acc + Number(v.total_costo || 0), 0)
+
+    const pagosEmpresa = pagosProveedor.filter((p) => p.activo !== false && String(p.proveedor) === key)
+    const pagosDirectos = pagos.filter(
+      (p) => p.activo !== false && p.directo_a_proveedor && p.venta != null && proveedorDeVenta.get(String(p.venta)) === key,
+    )
+    const totalPagado =
+      pagosEmpresa.reduce((acc, p) => acc + Number(p.monto || 0), 0) +
+      pagosDirectos.reduce((acc, p) => acc + Number(p.monto || 0), 0)
+
+    const nombreClienteDeVenta = (ventaId) => {
+      const v = ventas.find((x) => String(x.id) === String(ventaId))
+      return v ? v.cliente_nombre_snapshot : ''
+    }
+
+    return {
+      proveedor,
+      saldoInicial: Number(proveedor.saldo_inicial || 0),
+      totalCostos,
+      totalPagado,
+      saldoActual: Number(saldoPorProveedor.get(key) || 0),
+      ventasProveedor,
+      pagosEmpresa,
+      pagosDirectos,
+      nombreClienteDeVenta,
+    }
+  }, [detalleId, proveedores, ventas, pagosProveedor, pagos, saldoPorProveedor])
+
   function resetFormState() {
     setEditingId(null)
     setForm(emptyForm)
@@ -133,6 +173,84 @@ export default function ProveedoresPage({ onNavigate, currentUser }) {
     } finally {
       setSaving(false)
     }
+  }
+
+  if (detalle) {
+    const { proveedor, saldoInicial, totalCostos, totalPagado, saldoActual, ventasProveedor, pagosEmpresa, pagosDirectos, nombreClienteDeVenta } = detalle
+    const saldoColor = saldoActual > 0 ? '#b42318' : saldoActual < 0 ? '#027a48' : '#0f2233'
+    const totalPagos = pagosEmpresa.length + pagosDirectos.length
+    return (
+      <div className="stack proveedores-pro-page" style={{ gap: '14px' }}>
+        <div style={{ display: 'flex' }}>
+          <button
+            className="secondary-btn"
+            type="button"
+            onClick={() => setDetalleId(null)}
+            style={{ borderRadius: '12px', padding: '10px 14px', border: '1px solid #c9d6e3', background: '#f7fafc', fontWeight: 700, color: '#133b5c' }}
+          >
+            ← Volver a proveedores
+          </button>
+        </div>
+
+        <article className="summary-card" style={{ borderRadius: '20px', padding: '18px', border: '1px solid #d7e1ea', background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)', boxShadow: '0 12px 28px rgba(15,23,42,0.06)' }}>
+          <span style={{ fontSize: '12px', color: '#5b7083' }}>Proveedor</span>
+          <strong style={{ display: 'block', fontSize: '24px', color: '#0f2233', margin: '4px 0 8px' }}>{proveedor.nombre}</strong>
+          <span style={{ fontSize: '12px', color: '#5b7083' }}>Le debés</span>
+          <strong style={{ display: 'block', fontSize: '28px', color: saldoColor }}>{formatMoney(saldoActual)}</strong>
+        </article>
+
+        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: '10px' }}>
+          {[
+            ['Saldo inicial', saldoInicial],
+            ['Total en costos', totalCostos],
+            ['Total pagado', totalPagado],
+            ['Saldo actual', saldoActual],
+          ].map(([label, value]) => (
+            <article key={label} className="summary-card" style={{ borderRadius: '16px', border: '1px solid #d7e1ea', padding: '14px', background: '#fff', boxShadow: '0 8px 20px rgba(15,23,42,0.05)' }}>
+              <span style={{ fontSize: '12px', color: '#5b7083' }}>{label}</span>
+              <strong style={{ display: 'block', fontSize: '17px', color: '#0f2233', marginTop: '4px' }}>{formatMoney(value)}</strong>
+            </article>
+          ))}
+        </section>
+
+        <article className="list-card" style={{ borderRadius: '18px', padding: '16px' }}>
+          <strong style={{ fontSize: '18px', color: '#0f2233' }}>Ventas de este proveedor</strong>
+          <span style={{ color: '#5b7083', display: 'block', marginTop: '2px' }}>{ventasProveedor.length} registradas</span>
+        </article>
+        {ventasProveedor.length === 0 && <article className="list-card" style={{ color: '#5b7083' }}>Sin ventas de este proveedor.</article>}
+        {ventasProveedor.map((v) => (
+          <article key={v.id} className="list-card" style={{ borderRadius: '18px', padding: '16px', display: 'grid', gap: '4px' }}>
+            <strong style={{ fontSize: '16px', color: '#0f2233' }}>Venta #{v.id} · {v.cliente_nombre_snapshot}</strong>
+            <span>Fecha: {v.fecha_compra}</span>
+            <span>Costo: {formatMoney(v.total_costo)}</span>
+            <span>Total venta: {formatMoney(v.total_venta)}</span>
+          </article>
+        ))}
+
+        <article className="list-card" style={{ borderRadius: '18px', padding: '16px' }}>
+          <strong style={{ fontSize: '18px', color: '#0f2233' }}>Pagos a este proveedor</strong>
+          <span style={{ color: '#5b7083', display: 'block', marginTop: '2px' }}>{totalPagos} registrados</span>
+        </article>
+        {totalPagos === 0 && <article className="list-card" style={{ color: '#5b7083' }}>Sin pagos a este proveedor.</article>}
+        {pagosEmpresa.map((p) => (
+          <article key={`e-${p.id}`} className="list-card" style={{ borderRadius: '18px', padding: '16px', display: 'grid', gap: '4px' }}>
+            <strong style={{ fontSize: '16px', color: '#0f2233' }}>Pago de {empresaNombre}</strong>
+            <span>Monto: {formatMoney(p.monto)}</span>
+            <span>Fecha: {p.fecha_pago}</span>
+            <span>Forma: {p.forma_pago}</span>
+          </article>
+        ))}
+        {pagosDirectos.map((p) => (
+          <article key={`d-${p.id}`} className="list-card" style={{ borderRadius: '18px', padding: '16px', display: 'grid', gap: '4px' }}>
+            <strong style={{ fontSize: '16px', color: '#0f2233' }}>Pago directo del cliente</strong>
+            <span>Cliente: {nombreClienteDeVenta(p.venta)}</span>
+            <span>Monto: {formatMoney(p.monto)}</span>
+            <span>Fecha: {p.fecha_pago}</span>
+            <span>Forma: {p.forma_pago}</span>
+          </article>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -226,7 +344,10 @@ export default function ProveedoresPage({ onNavigate, currentUser }) {
             </strong>
           </div>
 
-          <div className="proveedores-pro-footer">
+          <div className="proveedores-pro-footer" style={{ display: 'flex', gap: '8px' }}>
+            <button className="proveedores-pro-edit-btn" type="button" onClick={() => { setDetalleId(proveedor.id); window.scrollTo({ top: 0 }) }}>
+              Ver cuenta
+            </button>
             <button className="proveedores-pro-edit-btn" type="button" onClick={() => handleEdit(proveedor)}>
               Editar
             </button>
