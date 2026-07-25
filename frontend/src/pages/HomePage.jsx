@@ -36,7 +36,6 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
   const [menuOpen, setMenuOpen] = useState(false)
 
   const negocio = currentUser?.empresa_nombre || currentUser?.first_name || currentUser?.username || 'Usuario'
-  const avatarInicial = (negocio.trim().charAt(0) || 'U').toUpperCase()
 
   useEffect(() => {
     let active = true
@@ -111,36 +110,46 @@ export default function HomePage({ onNavigate, currentUser, onLogout, onChangePa
 
       {!loading && (
         <>
-          <header className="home-topbar">
-            <div className="home-topbar-identity">
-              <span className="home-topbar-avatar" aria-hidden="true">{avatarInicial}</span>
-              <div className="home-topbar-greeting">
-                <span className="home-topbar-hello">Hola, {negocio}</span>
-                <span className="home-topbar-app">Nerca Poquet · Ventas y cobros</span>
+          <header className="home-header">
+            <div className="home-brandbar">
+              <div className="home-brand">
+                <img className="home-brand-logo" src="/logo-n.png" alt="Nerca Poquet" />
+                <span className="home-brand-name">Nerca Poquet</span>
+              </div>
+              <div className="home-brandbar-right">
+                <span className="home-brand-negocio">{negocio}</span>
+                <div className="home-topbar-menu">
+                  <button
+                    className="home-topbar-menu-btn"
+                    type="button"
+                    aria-label="Opciones de tu cuenta"
+                    onClick={() => setMenuOpen((v) => !v)}
+                  >
+                    ☰
+                  </button>
+                  {menuOpen && (
+                    <>
+                      <div className="home-topbar-menu-backdrop" onClick={() => setMenuOpen(false)} />
+                      <div className="home-topbar-menu-pop" role="menu">
+                        <button type="button" role="menuitem" onClick={() => { setMenuOpen(false); onChangePassword() }}>
+                          Cambiar clave
+                        </button>
+                        <button type="button" role="menuitem" className="home-topbar-menu-danger" onClick={() => { setMenuOpen(false); onLogout() }}>
+                          Cerrar sesión
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="home-topbar-menu">
-              <button
-                className="home-topbar-menu-btn"
-                type="button"
-                aria-label="Opciones de tu cuenta"
-                onClick={() => setMenuOpen((v) => !v)}
-              >
-                ☰
-              </button>
-              {menuOpen && (
-                <>
-                  <div className="home-topbar-menu-backdrop" onClick={() => setMenuOpen(false)} />
-                  <div className="home-topbar-menu-pop" role="menu">
-                    <button type="button" role="menuitem" onClick={() => { setMenuOpen(false); onChangePassword() }}>
-                      Cambiar clave
-                    </button>
-                    <button type="button" role="menuitem" className="home-topbar-menu-danger" onClick={() => { setMenuOpen(false); onLogout() }}>
-                      Cerrar sesión
-                    </button>
-                  </div>
-                </>
-              )}
+            <div className="home-greeting">
+              <h1 className="home-greeting-hello">Hola, {negocio}.</h1>
+              <p className="home-greeting-sub">
+                {Number(dashboard.pendienteTotal || 0) > 0
+                  ? (<>Tenés <strong>{money(dashboard.pendienteTotal)}</strong> por cobrar.</>)
+                  : 'Estás al día, no hay saldos por cobrar. 🎉'}
+              </p>
             </div>
           </header>
 
